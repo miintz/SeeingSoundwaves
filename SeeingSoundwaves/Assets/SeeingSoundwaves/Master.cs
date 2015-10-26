@@ -6,38 +6,42 @@ using UnityEngine.UI;
 public class Master : MonoBehaviour {
 
     public int N = 25;
-    List<Dot> Dots = new List<Dot>();
+    Dot[] Dots;
 
 	// Use this for initialization
 	void Start () {
-       
+        Dots = new Dot[N];        
 	}
-    
+
+    public Dot getDot(int _id)
+    {
+        return Dots[_id];
+    }
+
 	// Update is called once per frame
 	void Update () {
 
-        foreach (Dot d in Dots)
-        {            
-            if(!d.Disposed)
-                d.Update();
+        for (int u = 0; u < Dots.Length;u++ )
+        {
+            if (Dots[u] != null && !Dots[u].Disposed)
+                Dots[u].Update();
         }
 
-        for (int i = 0; i < Dots.Count; i++)
+        for (int i = 0; i < Dots.Length; i++)
         {
-            if (Dots[i].Strength < 0.0f)
+            if (Dots[i] != null && !Dots[i].Disposed) //meh...
             {
-                Dots[i].Dispose();                
+                if (Dots[i].Strength < 0.0f)
+                {
+                    Dots[i].Dispose();
+                    Dots[i] = null;
+                }
             }
         }
 
-        Dots.RemoveAll(d => d.Disposed == true);
-
         if (Input.GetMouseButtonDown(0))
         {
-            Dots = new List<Dot>();
            
-            if (Dots.Count < N)
-            {
                 float pia = (Mathf.PI * 2 / N);
 
                 for (int i = 0; i < N; i++)
@@ -55,11 +59,10 @@ public class Master : MonoBehaviour {
                     float difx = (x - mx) / dist;
                     float dify = (y - my) / dist;
 
-                    Dots.Add    (new Dot(x, y, difx, dify, i));
+                    Dots[i] = new Dot(x, y, difx, dify, i);
                 }
             }
-           
-        }
+                   
 	}
 }
 

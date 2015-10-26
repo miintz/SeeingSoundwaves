@@ -21,7 +21,31 @@ public class Collidable : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        Debug.Log("collision with: " + col.gameObject.name);
+       
+        switch(name)
+        {
+            case "EastWall":
+                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.x *= -1;
+                break;
+            case "WestWall":                
+                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.x *= -1;
+                break;
+            case "NorthWall":
+                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.z *= -1;
+                break;
+            case "SouthWall":
+                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.z *= -1;
+                break;
+            case "Ceiling":
+                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.y *= -1;
+                break;
+            case "Floor":
+                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.y *= -1;                
+                break;
+
+        }
+
+        GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Decay(50);        
     }
 
 }

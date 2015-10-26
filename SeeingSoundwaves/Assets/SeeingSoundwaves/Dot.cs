@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using System;
 
 public class Dot  {
-
     
-    Vector3 Velocity;// { get; set; }
+    public Vector3 Velocity;// { get; set; }
     Vector3 Position;// { get; set; }
     Vector3 Scale;
 
     public float Strength { get; set; }    
     float Radius { get; set; }
     float Speed { get; set; }
-    int Id { get; set; }
+    public int Id { get; set; }
     
     private GameObject DrawObject;
     
     public Boolean Disposed = false;
+
+    public Dot(int _id)
+    {
+        this.Id = _id;
+        Disposed = true;
+    }
 
 	public Dot(float _x, float _y, float _dirx, float _diry, int _id) 
     {
@@ -25,8 +30,7 @@ public class Dot  {
 
         this.Position = new Vector3(_x, _y);
         this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry), new Vector3(0.1f,0.1f));
-        
-
+       
         this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 
         this.Id = _id;
@@ -34,10 +38,12 @@ public class Dot  {
         DrawObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         DrawObject.transform.localScale = this.Scale;
         DrawObject.transform.position = this.Position;
-        
-        DrawObject.AddComponent<Rigidbody>();
 
-        DrawObject.name = "Sphere: " + this.Id;
+        DrawObject.AddComponent<Rigidbody>();
+        DrawObject.GetComponent<Rigidbody>().mass = 1.0f;
+        DrawObject.GetComponent<Rigidbody>().useGravity = false;
+
+        DrawObject.name = this.Id.ToString();        
 	}
 
     public void Dispose()
@@ -60,7 +66,7 @@ public class Dot  {
         DrawObject.transform.position += this.Velocity;
 	}
 
-    void Decay(int s)
+    public void Decay(int s)
     {
         this.Strength = this.Strength - (float)(s / 500.0);
 
