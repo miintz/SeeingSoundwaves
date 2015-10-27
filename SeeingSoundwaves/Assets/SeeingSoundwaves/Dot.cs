@@ -5,17 +5,20 @@ using System;
 public class Dot  {
     
     public Vector3 Velocity;// { get; set; }
+    
     Vector3 Position;// { get; set; }
     Vector3 Scale;
 
-    public float Strength { get; set; }    
     float Radius { get; set; }
     float Speed { get; set; }
+    public float Strength { get; set; }    
+    
     public int Id { get; set; }
     
-    public GameObject DrawObject;
-    
     public Boolean Disposed = false;
+    public Boolean Disabled = false;
+    
+    public GameObject DrawObject;
 
     public Dot(int _id)
     {
@@ -23,23 +26,24 @@ public class Dot  {
         Disposed = true;
     }
 
-	public Dot(float _x, float _y, float _dirx, float _diry, int _id) 
+	public Dot(float _x, float _y, float _z, float _dirx, float _diry, float _dirz, int _id) 
     {
         this.Speed = 3.5f;
         this.Strength = 1.0f;
 
-        this.Position = new Vector3(_x, _y);
-        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry), new Vector3(0.1f,0.1f));
-       
+        this.Position = new Vector3(_x, _y, _z);
+        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry, _dirz), new Vector3(0.1f,0.1f,0.1f));
+        
         this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 
         this.Id = _id;
         
         DrawObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        
         DrawObject.transform.localScale = this.Scale;
         DrawObject.transform.position = this.Position;
 
-        DrawObject.AddComponent<Rigidbody>();
+        DrawObject.AddComponent<Rigidbody>();        
         DrawObject.GetComponent<Rigidbody>().mass = 1.0f;
         DrawObject.GetComponent<Rigidbody>().useGravity = false;
 
@@ -56,16 +60,19 @@ public class Dot  {
 
     void Start() { }
 
-	public void Update () {        
-        Decay(1);   
+	public void Update () 
+    {
+        if (!Disabled)
+        {
+            Decay(1);
 
-        float form = 0.3f * this.Strength;
-         
-        this.Scale = new Vector3(form, form, form);        
-        DrawObject.transform.localScale = this.Scale;
+            float form = 0.3f * this.Strength;
 
-       
-        DrawObject.transform.position += this.Velocity;
+            this.Scale = new Vector3(form, form, form);
+
+            DrawObject.transform.localScale = this.Scale;
+            DrawObject.transform.position += this.Velocity;
+        }
 	}
 
     public void Decay(int s)

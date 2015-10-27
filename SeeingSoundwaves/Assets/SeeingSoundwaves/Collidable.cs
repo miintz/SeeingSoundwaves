@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic; 
 
-
 public class Collidable : MonoBehaviour {
     public List<Vector2> Points;
     
