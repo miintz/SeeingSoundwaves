@@ -8,44 +8,54 @@ public class Collidable : MonoBehaviour {
     
     public bool TRIANGLE = true;
     public bool SQUARE = false;
-	
-    // Use this for initialization
+    
+    int voidLayer;
+        
 	void Start () {
-	
+        
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     void OnCollisionEnter(Collision col)
-    {
-       
-        switch(name)
+    {        
+        try
         {
-            case "EastWall":
-                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.x *= -1;
-                break;
-            case "WestWall":                
-                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.x *= -1;
-                break;
-            case "NorthWall":
-                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.z *= -1;
-                break;
-            case "SouthWall":
-                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.z *= -1;
-                break;
-            case "Ceiling":
-                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.y *= -1;
-                break;
-            case "Floor":
-                GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Velocity.y *= -1;                
-                break;
+            switch (col.gameObject.name)
+            {
+                case "EastWall":
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.x *= -1;
+                    break;
+                case "WestWall":                 
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.x *= -1;
+                    break;
+                case "NorthWall":
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.z *= -1;
+                    break;
+                case "SouthWall":
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.z *= -1;
+                    break;
+                case "Ceiling":
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.y *= -1;
+                    break;
+                case "Floor":
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.y *= -1;
+                    break;
+                default:
+                    //Debug.Log(name + " ignores " + col.gameObject.name);                    
 
+
+                    break;
+            }
+
+            GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Decay(50);
         }
-
-        GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(col.gameObject.name)).Decay(50);        
-    }
-
+        catch(System.Exception E)
+        {
+        
+        }         
+    }   
 }

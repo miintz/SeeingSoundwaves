@@ -42,8 +42,7 @@ public class Master : MonoBehaviour {
         }
 
         if (Input.GetMouseButtonDown(0))
-        {
-           
+        {           
             float pia = (Mathf.PI * 2 / N);
 
             for (int i = 0; i < N; i++)
@@ -62,8 +61,8 @@ public class Master : MonoBehaviour {
                     mz = 0.0f;
                 }
 
-                float x = mx + 5 * Mathf.Cos(pia * i);
-                float y = my + 5 * Mathf.Sin(pia * i);
+                float x = mx + 1 * Mathf.Cos(pia * i);
+                float y = my + 1 * Mathf.Sin(pia * i);
                 float z = 0.0f;
 
                 float dist =  Vector3.Distance(new Vector3(mx,my,mz), new Vector3(x,y,z));
@@ -72,6 +71,18 @@ public class Master : MonoBehaviour {
                 float dify = (y - my) / dist;
 
                 Dots[i] = new Dot(x, y, difx, dify, i);
+            }
+
+            int bn = 0;
+            
+            for (int z = 0; z < N; z++)
+            {               
+                for (int yy = 0; yy < N; yy++)
+                {
+                    //ignore self collisions
+                    Physics.IgnoreCollision(Dots[z].DrawObject.GetComponent<SphereCollider>(), Dots[yy].DrawObject.GetComponent<SphereCollider>());
+                    bn++;  
+                }
             }
         }
                    

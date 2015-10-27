@@ -13,7 +13,7 @@ public class Dot  {
     float Speed { get; set; }
     public int Id { get; set; }
     
-    private GameObject DrawObject;
+    public GameObject DrawObject;
     
     public Boolean Disposed = false;
 
@@ -43,7 +43,7 @@ public class Dot  {
         DrawObject.GetComponent<Rigidbody>().mass = 1.0f;
         DrawObject.GetComponent<Rigidbody>().useGravity = false;
 
-        //DrawObject.AddComponent<Collidable>();
+        DrawObject.AddComponent<Collidable>();
 
         DrawObject.name = this.Id.ToString();               
 	}
