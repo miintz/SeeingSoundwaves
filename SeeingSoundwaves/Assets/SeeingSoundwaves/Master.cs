@@ -46,6 +46,19 @@ public class Master : MonoBehaviour {
 
         return new float[3] { x, y, z };
     }
+
+    float[] SpherePoint(float x0, float y0, float z0, float radius, float u, float v)
+    {      
+        var theta = 2 * Mathf.PI * u;
+        var phi = Mathf.Acos(2 * v - 1);
+
+        float x = x0 + (radius * Mathf.Sin(phi) * Mathf.Cos(theta));
+        float y = y0 + (radius * Mathf.Sin(phi) * Mathf.Sin(theta));
+        float z = z0 + (radius * Mathf.Cos(phi));
+
+        return new float[3] { x, y, z };
+    }
+
 	void Update () 
     {
         if (MasterList.Count != 0)
@@ -74,6 +87,7 @@ public class Master : MonoBehaviour {
                 for (int m = 0; m < MasterList.Count; m++)
                 {
                     bool empty = true;
+                    
                     for (int i = 0; i < N; i++)
                     {
                         if (MasterList[m][i] != null)
@@ -98,7 +112,7 @@ public class Master : MonoBehaviour {
 
                 float pia = (Mathf.PI * 2 / N);
 
-                int lastId = MasterList.Count != 0 ? MasterList[MasterList.Count - 1][N - 1].Id : 0;
+                int lastId = MasterList.Count != 0 ? MasterList[MasterList.Count - 1][N - 1].Id : 0;                                
 
                 for (int i = 0; i < N; i++)
                 {
@@ -123,12 +137,14 @@ public class Master : MonoBehaviour {
                             z = 0.0f;
                         }
                         else
-                        {
-                            float[] pos = randomSpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f);
+                        {                            
+                            float[] pos = SpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f, (1.0f / N), (1.0f / N));
                             
                             x = pos[0];
                             y = pos[1];
-                            z = pos[2];                            
+                            z = pos[2];
+
+                            Debug.Log("random?");
                         }
                     }
                     else

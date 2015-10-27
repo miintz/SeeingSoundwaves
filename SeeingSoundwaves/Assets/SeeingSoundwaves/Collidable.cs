@@ -44,9 +44,7 @@ public class Collidable : MonoBehaviour {
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.y *= -1;
                     break;
                 default:
-                    //Debug.Log(name + " ignores " + col.gameObject.name);                    
-
-
+                    //Debug.Log(name + " ignores " + col.gameObject.name);
                     break;
             }
 
