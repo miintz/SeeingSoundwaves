@@ -31,32 +31,22 @@ public class Master : MonoBehaviour {
         return null;
     }
 
-    float[] randomSpherePoint(float x0, float y0, float z0, float radius){
-        Random ra = new Random();
+    Vector3 randomSpherePoint(int I)
+    {
+        int k = I;
+
+        float fPoints = (float)N;
+        float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
+        float off = 2 / fPoints;        
         
-        var u = Random.value;
-        var v = Random.value;        
+        float y = k * off - 1 + (off / 2);
+        float r = Mathf.Sqrt(1 - y * y);
+
+        float phi = k * inc;
         
-        var theta = 2 * Mathf.PI * u;
-        var phi = Mathf.Acos(2 * v - 1);
-
-        float x = x0 + (radius * Mathf.Sin(phi) * Mathf.Cos(theta));
-        float y = y0 + (radius * Mathf.Sin(phi) * Mathf.Sin(theta));
-        float z = z0 + (radius * Mathf.Cos(phi));
-
-        return new float[3] { x, y, z };
-    }
-
-    float[] SpherePoint(float x0, float y0, float z0, float radius, float u, float v)
-    {      
-        var theta = 2 * Mathf.PI * u;
-        var phi = Mathf.Acos(2 * v - 1);
-
-        float x = x0 + (radius * Mathf.Sin(phi) * Mathf.Cos(theta));
-        float y = y0 + (radius * Mathf.Sin(phi) * Mathf.Sin(theta));
-        float z = z0 + (radius * Mathf.Cos(phi));
-
-        return new float[3] { x, y, z };
+        Vector3 points = new Vector3(Mathf.Cos(phi) * r, y + 4.0f, Mathf.Sin(phi) * r);
+       
+        return points;
     }
 
 	void Update () 
@@ -137,14 +127,15 @@ public class Master : MonoBehaviour {
                             z = 0.0f;
                         }
                         else
-                        {                            
-                            float[] pos = SpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f, (1.0f / N), (1.0f / N));
-                            
-                            x = pos[0];
-                            y = pos[1];
-                            z = pos[2];
+                        {
+                            //float[] pos = randomSpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f);
+                            //float[] pos = SpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f, (1.0f / N) * i, (1.0f / N) * i);
 
-                            Debug.Log("random?");
+                            Vector3 pos = randomSpherePoint(i);
+
+                            x = pos.x;
+                            y = pos.y;
+                            z = pos.z;                         
                         }
                     }
                     else
@@ -159,13 +150,16 @@ public class Master : MonoBehaviour {
                             y = my + 1 * Mathf.Sin(pia * i);
                             z = 0.0f;
                         }
-                        else 
+                        else
                         {
-                            float[] pos = randomSpherePoint(0.0f, 4.0f, 0.0f, 1.0f);                        
-                            
-                            x = pos[0];
-                            y = pos[1];
-                            z = pos[2];                        
+                            //float[] pos = randomSpherePoint(0.0f, 4.0f, 0.0f, 1.0f);
+                            //float[] pos = SpherePoint(0.0f, 4.0f, 0.0f, 1.0f, (1.0f / N) * i, (1.0f / N) * i);                        
+
+                            Vector3 pos = randomSpherePoint(i);
+
+                            x = pos.x;
+                            y = pos.y;
+                            z = pos.z;                        
                         }
                     }
 
