@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class Master : MonoBehaviour {
 
     public int N = 25;
+    public bool usePlayerPosition = true;
+
     Dot[] Dots;
 
 	// Use this for initialization
@@ -42,26 +44,36 @@ public class Master : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
            
-                float pia = (Mathf.PI * 2 / N);
+            float pia = (Mathf.PI * 2 / N);
 
-                for (int i = 0; i < N; i++)
+            for (int i = 0; i < N; i++)
+            {
+                float mx,my,mz;
+                if (usePlayerPosition)
                 {
-                    float mx = GameObject.Find("FPSController").transform.position.x;
-                    float my = GameObject.Find("FPSController").transform.position.y;
-                    float mz = 0.0f;
-
-                    float x = mx + 5 * Mathf.Cos(pia * i);
-                    float y = my + 5 * Mathf.Sin(pia * i);
-                    float z = 0.0f;
-
-                    float dist =  Vector3.Distance(new Vector3(mx,my,mz), new Vector3(x,y,z));
-
-                    float difx = (x - mx) / dist;
-                    float dify = (y - my) / dist;
-
-                    Dots[i] = new Dot(x, y, difx, dify, i);
+                    mx = GameObject.Find("FPSController").transform.position.x;
+                    my = GameObject.Find("FPSController").transform.position.y;
+                    mz = 0.0f;
                 }
+                else
+                {
+                    mx = 0.0f;
+                    my = 4.0f;
+                    mz = 0.0f;
+                }
+
+                float x = mx + 5 * Mathf.Cos(pia * i);
+                float y = my + 5 * Mathf.Sin(pia * i);
+                float z = 0.0f;
+
+                float dist =  Vector3.Distance(new Vector3(mx,my,mz), new Vector3(x,y,z));
+
+                float difx = (x - mx) / dist;
+                float dify = (y - my) / dist;
+
+                Dots[i] = new Dot(x, y, difx, dify, i);
             }
+        }
                    
 	}
 }

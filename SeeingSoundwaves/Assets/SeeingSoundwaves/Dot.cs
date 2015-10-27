@@ -43,7 +43,9 @@ public class Dot  {
         DrawObject.GetComponent<Rigidbody>().mass = 1.0f;
         DrawObject.GetComponent<Rigidbody>().useGravity = false;
 
-        DrawObject.name = this.Id.ToString();        
+        //DrawObject.AddComponent<Collidable>();
+
+        DrawObject.name = this.Id.ToString();               
 	}
 
     public void Dispose()
