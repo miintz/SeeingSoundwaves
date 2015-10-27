@@ -159,8 +159,6 @@ public class Master : MonoBehaviour {
                     float dify = (y - my) / dist;
                     float difz = (z - mz) / dist;
 
-                    Debug.Log("difx " + difx + " dify " + dify + " difz " + difz);
-
                     Dots[i] = new Dot(x, y, z, difx, dify, difz, lastId + i);
                     Dots[i].Disabled = DisableMovement;
                 }
