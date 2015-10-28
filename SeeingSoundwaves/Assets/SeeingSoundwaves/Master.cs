@@ -7,7 +7,8 @@ using System.Linq;
 public class Master : MonoBehaviour {
 
     public int N = 25;
-    
+    public int NET = 4;
+
     public bool UsePlayerPosition = true;
     public bool SphereMode = false;
     public bool DisableMovement = false;
@@ -254,7 +255,7 @@ public class Master : MonoBehaviour {
                     List<Dot> Neighbors = new List<Dot>();
                     Dot FirstOne = Lists;
 
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < NET; i++)
                     {                        
                         Dot LowestOne = null;
 
