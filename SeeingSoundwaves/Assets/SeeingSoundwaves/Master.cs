@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Master : MonoBehaviour {
 
@@ -19,15 +20,20 @@ public class Master : MonoBehaviour {
 
     public Dot getDot(int _id)
     {
-        foreach(Dot[] dots in MasterList)
+        if (MasterList.Count != 0)
         {
-            for (int i = 0; i < dots.Length; i++)
+            foreach (Dot[] dots in MasterList)
             {
-                if (dots[i].Id == _id)
-                    return dots[i];
+                for (int i = 0; i < dots.Length; i++)
+                {
+                    if (dots[i] != null)
+                    {
+                        if (dots[i].Id == _id)
+                            return dots[i];
+                    }
+                }
             }
         }
-
         return null;
     }
 
@@ -36,6 +42,7 @@ public class Master : MonoBehaviour {
         int k = I;
 
         float fPoints = (float)N;
+
         float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
         float off = 2 / fPoints;        
         
@@ -45,8 +52,35 @@ public class Master : MonoBehaviour {
         float phi = k * inc;
         
         Vector3 points = new Vector3(Mathf.Cos(phi) * r, y + 4.0f, Mathf.Sin(phi) * r);
-       
+     
         return points;
+    }
+
+    Mesh CreateMesh(float width, float height)
+    {
+        Mesh m = new Mesh();
+        m.name = "ScriptedMesh";
+
+        m.vertices = new Vector3[] 
+        {
+            new Vector3(-width, -height, 0.01f),
+            new Vector3(width, -height, 0.01f),
+            new Vector3(width, height, 0.01f),
+            new Vector3(-width, height, 0.01f)
+        };
+        
+        m.uv = new Vector2[] 
+        {
+            new Vector2 (0, 0),
+            new Vector2 (0, 1),
+            new Vector2 (1, 1),
+            new Vector2 (1, 0)
+        };
+
+        m.triangles = new int[] { 0, 1, 2, 0, 2, 3 };
+        m.RecalculateNormals();
+
+        return m;
     }
 
 	void Update () 
@@ -92,10 +126,40 @@ public class Master : MonoBehaviour {
                 }
             }
         }
-
+        
         //click so add thingies
         if (Input.GetMouseButtonDown(0))
-        {
+        {            
+            //Mesh m = CreateMesh(100, 100);
+            
+            //GameObject plane = new GameObject("Plane");
+            
+            //MeshFilter meshFilter = (MeshFilter)plane.AddComponent(typeof(MeshFilter));
+            //meshFilter.mesh = CreateMesh(1, 0.2f);
+            
+            //MeshRenderer renderer = plane.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
+            //renderer.material.shader = Shader.Find("Particles/Additive");
+            
+            //Texture2D tex = new Texture2D(1, 1);
+            //tex.SetPixel(0, 0, Color.green);
+            //tex.Apply();
+            
+            //renderer.material.mainTexture = tex;
+            //renderer.material.color = Color.green;
+
+            //plane.transform.position += new Vector3(0.0f, 4.0f);
+            
+            //m.vertices = new Vector3[]{
+            //    new Vector3(-20, -20, 0.01f),
+            //    new Vector3(20, -20, 0.01f),
+            //    new Vector3(20, 20, 0.01f),
+            //    new Vector3(-20, 20, 0.01f)
+            //};
+            
+            //plane.transform.localScale = new Vector3(1.0f, 1.0f);
+
+            //return;    
+
             if (MasterList.Count < 5)
             {
                 Dot[] Dots = new Dot[N];
@@ -127,10 +191,7 @@ public class Master : MonoBehaviour {
                             z = 0.0f;
                         }
                         else
-                        {
-                            //float[] pos = randomSpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f);
-                            //float[] pos = SpherePoint(GameObject.Find("FPSController").transform.position.x, GameObject.Find("FPSController").transform.position.y, GameObject.Find("FPSController").transform.position.z, 1.0f, (1.0f / N) * i, (1.0f / N) * i);
-
+                        {                         
                             Vector3 pos = randomSpherePoint(i);
 
                             x = pos.x;
@@ -151,10 +212,7 @@ public class Master : MonoBehaviour {
                             z = 0.0f;
                         }
                         else
-                        {
-                            //float[] pos = randomSpherePoint(0.0f, 4.0f, 0.0f, 1.0f);
-                            //float[] pos = SpherePoint(0.0f, 4.0f, 0.0f, 1.0f, (1.0f / N) * i, (1.0f / N) * i);                        
-
+                        {                           
                             Vector3 pos = randomSpherePoint(i);
 
                             x = pos.x;
@@ -187,10 +245,50 @@ public class Master : MonoBehaviour {
                             }
                         }                        
                     }
-                }               
+                }
+
+                
+                foreach (Dot Lists in MasterList[0])
+                {
+                    //int lowestValue = groups.SelectMany(group => group.Items).Min(item => item.Val);
+                    List<Dot> Neighbors = new List<Dot>();
+                    Dot FirstOne = Lists;
+
+                    for (int i = 0; i < 4; i++)
+                    {                        
+                        Dot LowestOne = null;
+
+                        float closest1 = float.MaxValue;
+
+                        foreach (Dot Dot in MasterList[0])
+                        {
+                            //skip the first one
+                            if (FirstOne != Dot)                                
+                            {
+                                if (Vector3.Distance(FirstOne.DrawObject.transform.position, Dot.DrawObject.transform.position) < closest1)
+                                {
+                                    //is it in list?
+                                    if (!Neighbors.Contains(Dot))
+                                    {
+                                        closest1 = Vector3.Distance(FirstOne.DrawObject.transform.position, Dot.DrawObject.transform.position);
+                                        LowestOne = Dot;
+                                    }
+                                }
+                            }
+                        }
+
+                        Neighbors.Add(LowestOne);
+                    }
+
+                    foreach (Dot a in Neighbors)
+                    {                        
+                        FirstOne.Closest.Add(a.Id);
+                    }                   
+                }
             }
-        }
-                   
+        }                   
 	}
+
+    public Dot ArrayList { get; set; }
 }
 

@@ -20,10 +20,12 @@ public class Dot  {
     
     public GameObject DrawObject;
 
+    public List<int> Closest = new List<int>();
+
     public Dot(int _id)
     {
         this.Id = _id;
-        Disposed = true;
+        Disposed = true;        
     }
 
 	public Dot(float _x, float _y, float _z, float _dirx, float _diry, float _dirz, int _id) 
@@ -32,14 +34,12 @@ public class Dot  {
         this.Strength = 1.0f;
 
         this.Position = new Vector3(_x, _y, _z);
-        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry, _dirz), new Vector3(0.1f,0.1f,0.1f));
-        
+        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry, _dirz), new Vector3(0.1f,0.1f,0.1f));        
         this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 
         this.Id = _id;
         
-        DrawObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        
+        DrawObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);        
         DrawObject.transform.localScale = this.Scale;
         DrawObject.transform.position = this.Position;
 
@@ -47,10 +47,31 @@ public class Dot  {
         DrawObject.GetComponent<Rigidbody>().mass = 1.0f;
         DrawObject.GetComponent<Rigidbody>().useGravity = false;
 
-        DrawObject.AddComponent<Collidable>();
+        DrawObject.AddComponent<Collidable>();        
 
         DrawObject.name = this.Id.ToString();               
 	}
+    Mesh CreateMesh(float width, float height)
+    {
+        Mesh m = new Mesh();
+        m.name = "ScriptedMesh";
+        m.vertices = new Vector3[] {
+         new Vector3(-width, -height, 0.01f),
+         new Vector3(width, -height, 0.01f),
+         new Vector3(width, height, 0.01f),
+         new Vector3(-width, height, 0.01f)
+     };
+        m.uv = new Vector2[] {
+         new Vector2 (0, 0),
+         new Vector2 (0, 1),
+         new Vector2(1, 1),
+         new Vector2 (1, 0)
+     };
+        m.triangles = new int[] { 0, 1, 2, 0, 2, 3 };
+        m.RecalculateNormals();
+
+        return m;
+    }
 
     public void Dispose()
     {
@@ -63,7 +84,7 @@ public class Dot  {
 	public void Update () 
     {
         if (!Disabled)
-        {
+        {            
             Decay(1);
 
             float form = 0.3f * this.Strength;
@@ -72,6 +93,20 @@ public class Dot  {
 
             DrawObject.transform.localScale = this.Scale;
             DrawObject.transform.position += this.Velocity;
+            
+            if (Closest.Count > 0)
+            {
+                foreach(int i in Closest)
+                {
+                    Vector3 Target =  GameObject.Find("FPSController").GetComponent<Master>().getDot(i).DrawObject.transform.position;
+
+                    Vector3 heading = Target - this.DrawObject.transform.position;
+                    var distance = heading.magnitude;
+                    Vector3 direction = heading / distance;
+
+                    Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.green);
+                }
+            }
         }
 	}
 
@@ -171,7 +206,6 @@ public class Dot  {
                     }
                     else if (Col.SQUARE) //convex is a bit wonky
                     {
-
                         float d1 = Vector2.Distance(this.Position, Points[0]);
                         float d2 = Vector2.Distance(this.Position, Points[1]);
                         float d3 = Vector2.Distance(this.Position, Points[2]);
