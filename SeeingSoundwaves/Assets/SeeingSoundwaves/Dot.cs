@@ -18,12 +18,13 @@ public class Dot  {
     
     public Boolean Disposed = false;
     public Boolean Disabled = false;
-    
+
     public GameObject DrawObject;
 
     public List<int> Closest = new List<int>();
     
     public List<Color> Colors = new List<Color>();
+    
 
     public Dot(int _id)
     {
@@ -41,14 +42,22 @@ public class Dot  {
 
     }
 
-	public Dot(float _x, float _y, float _z, float _dirx, float _diry, float _dirz, int _id) 
+	public Dot(float _x, float _y, float _z, float _dirx, float _diry, float _dirz, int _id, Boolean _neglible) 
     {
         this.Speed = 3.5f;
         this.Strength = 1.0f;
 
         this.Position = new Vector3(_x, _y, _z);
-        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry, _dirz), new Vector3(0.1f,0.1f,0.1f));        
-        this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
+        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry, _dirz), new Vector3(0.1f,0.1f,0.1f));
+
+        if (!_neglible)
+        {
+            this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
+        }
+        else
+        {
+            this.Scale = new Vector3(0.001f, 0.001f, 0.001f); //not working
+        }
 
         this.Id = _id;
         

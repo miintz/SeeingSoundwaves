@@ -13,6 +13,7 @@ public class Master : MonoBehaviour {
     public bool SphereMode = false;
     public bool DisableMovement = false;
     public bool ColorBounce = false;
+    public bool NeglibleRadius = false;
 
     List<Dot[]> MasterList;
   	
@@ -229,7 +230,7 @@ public class Master : MonoBehaviour {
                     float dify = (y - my) / dist;
                     float difz = (z - mz) / dist;
 
-                    Dots[i] = new Dot(x, y, z, difx, dify, difz, lastId + i);
+                    Dots[i] = new Dot(x, y, z, difx, dify, difz, lastId + i, NeglibleRadius);                    
                     Dots[i].Disabled = DisableMovement;
                 }
 
