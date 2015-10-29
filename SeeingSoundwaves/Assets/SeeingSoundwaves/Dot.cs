@@ -24,7 +24,8 @@ public class Dot  {
     public List<int> Closest = new List<int>();
     
     public List<Color> Colors = new List<Color>();
-    
+
+    string FPSname = "CenterFPS";
 
     public Dot(int _id)
     {
@@ -120,18 +121,18 @@ public class Dot  {
             {
                 foreach (int i in Closest)
                 {
-                    Dot a = GameObject.Find("FPSController").GetComponent<Master>().getDot(i);
+                    Dot a = GameObject.Find(this.FPSname).GetComponent<Master>().getDot(i);
                     if (a != null)
                     {
                         Vector3 Target = a.DrawObject.transform.position;
-
+                        
                         Vector3 heading = Target - this.DrawObject.transform.position;
                         float distance = heading.magnitude;
                         Vector3 direction = heading / distance;
 
                         switch (Bounces)
                         {
-                            case 0:
+                            case 0:                               
                                 Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.red);
                                 break;
                             case 1:

@@ -8,6 +8,7 @@ public class Master : MonoBehaviour {
 
     public int N = 25;
     public int NET = 4;
+    public int SOURCES = 4;
 
     public bool UsePlayerPosition = true;
     public bool SphereMode = false;
@@ -16,7 +17,9 @@ public class Master : MonoBehaviour {
     public bool NeglibleRadius = false;
 
     List<Dot[]> MasterList;
-  	
+
+    string FPSname = "CenterFPS";
+
 	void Start () {
         MasterList = new List<Dot[]>();
 	}
@@ -163,7 +166,7 @@ public class Master : MonoBehaviour {
 
             //return;    
 
-            if (MasterList.Count < 5)
+            if (MasterList.Count < SOURCES)
             {
                 Dot[] Dots = new Dot[N];
 
@@ -183,8 +186,8 @@ public class Master : MonoBehaviour {
 
                     if (UsePlayerPosition)
                     {
-                        mx = GameObject.Find("FPSController").transform.position.x;
-                        my = GameObject.Find("FPSController").transform.position.y;
+                        mx = GameObject.Find("CornerFPS").transform.position.x;
+                        my = GameObject.Find("CornerFPS").transform.position.y;
                         mz = 0.0f;
 
                         if (!SphereMode)
@@ -245,6 +248,7 @@ public class Master : MonoBehaviour {
                             for (int yy = 0; yy < N; yy++)
                             {                         
                                 Physics.IgnoreCollision(dots[z].DrawObject.GetComponent<SphereCollider>(), dots2[yy].DrawObject.GetComponent<SphereCollider>());
+                                //Physics.IgnoreCollision(dots[z].DrawObject.GetComponent<SphereCollider>(), GameObject.Find("FPSController").GetComponent<Collider>());
                             }
                         }                        
                     }
@@ -292,6 +296,6 @@ public class Master : MonoBehaviour {
         }                   
 	}
 
-    public Dot ArrayList { get; set; }
+    
 }
 
