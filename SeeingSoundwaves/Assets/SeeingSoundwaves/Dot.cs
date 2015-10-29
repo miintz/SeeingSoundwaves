@@ -14,6 +14,7 @@ public class Dot  {
     public float Strength { get; set; }    
     
     public int Id { get; set; }
+    public int Bounces { get; set; }
     
     public Boolean Disposed = false;
     public Boolean Disabled = false;
@@ -21,11 +22,23 @@ public class Dot  {
     public GameObject DrawObject;
 
     public List<int> Closest = new List<int>();
+    
+    public List<Color> Colors = new List<Color>();
 
     public Dot(int _id)
     {
         this.Id = _id;
-        Disposed = true;        
+        Disposed = true;
+        
+        Bounces = 0;
+        
+        Colors.Add(Color.red);
+        Colors.Add(Color.yellow);
+        Colors.Add(Color.green);
+        Colors.Add(Color.cyan);
+        Colors.Add(Color.blue);
+        Colors.Add(Color.magenta);
+
     }
 
 	public Dot(float _x, float _y, float _z, float _dirx, float _diry, float _dirz, int _id) 
@@ -96,18 +109,54 @@ public class Dot  {
             
             if (Closest.Count > 0)
             {
-                foreach(int i in Closest)
+                foreach (int i in Closest)
                 {
-                    Vector3 Target =  GameObject.Find("FPSController").GetComponent<Master>().getDot(i).DrawObject.transform.position;
+                    Dot a = GameObject.Find("FPSController").GetComponent<Master>().getDot(i);
+                    if (a != null)
+                    {
+                        Vector3 Target = a.DrawObject.transform.position;
 
-                    Vector3 heading = Target - this.DrawObject.transform.position;
-                    var distance = heading.magnitude;
-                    Vector3 direction = heading / distance;
+                        Vector3 heading = Target - this.DrawObject.transform.position;
+                        float distance = heading.magnitude;
+                        Vector3 direction = heading / distance;
 
-                    Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.green);
+                        switch (Bounces)
+                        {
+                            case 0:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.red);
+                                break;
+                            case 1:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.green);
+                                break;
+                            case 2:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.blue);
+                                break;
+                            case 3:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.cyan);
+                                break;
+                            case 4:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.magenta);
+                                break;
+                            case 5:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.yellow);
+                                break;
+                            case 6:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(255, 153, 0));
+                                break;
+                            case 7:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(51, 51, 0));
+                                break;
+                            case 8:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(153, 255, 204));
+                                break;
+                            case 9:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(0, 102, 102));
+                                break;
+                        }
+                    }
                 }
             }
-        }
+        }     
 	}
 
     public void Decay(int s)

@@ -27,21 +27,27 @@ public class Collidable : MonoBehaviour {
             {
                 case "EastWall":
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.x *= -1;
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Bounces++;
                     break;
                 case "WestWall":                 
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.x *= -1;
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Bounces++;
                     break;
                 case "NorthWall":
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.z *= -1;
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Bounces++;
                     break;
                 case "SouthWall":
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.z *= -1;
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Bounces++;
                     break;
                 case "Ceiling":
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.y *= -1;
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Bounces++;
                     break;
                 case "Floor":
                     GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Velocity.y *= -1;
+                    GameObject.Find("FPSController").GetComponent<Master>().getDot(int.Parse(name)).Bounces++;
                     break;
                 default:
                     //Debug.Log(name + " ignores " + col.gameObject.name);

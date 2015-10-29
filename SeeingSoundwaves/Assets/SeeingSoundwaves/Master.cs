@@ -12,6 +12,7 @@ public class Master : MonoBehaviour {
     public bool UsePlayerPosition = true;
     public bool SphereMode = false;
     public bool DisableMovement = false;
+    public bool ColorBounce = false;
 
     List<Dot[]> MasterList;
   	
