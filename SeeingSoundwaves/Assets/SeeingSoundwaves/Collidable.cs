@@ -21,7 +21,7 @@ public class Collidable : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        string FPSname = "CenterFPS";
+        string FPSname = "MobileFPS";
 
         try
         {

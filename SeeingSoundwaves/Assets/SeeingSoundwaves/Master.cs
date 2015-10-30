@@ -18,7 +18,7 @@ public class Master : MonoBehaviour {
 
     List<Dot[]> MasterList;
 
-    string FPSname = "CenterFPS";
+    string FPSname = "MobileFPS";
 
 	void Start () {
         MasterList = new List<Dot[]>();
@@ -131,10 +131,10 @@ public class Master : MonoBehaviour {
                     }
                 }
             }
-        }
-        
+        }      
+
         //click so add thingies
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown("b") || Input.GetKeyDown("joystick button 5"))
         {            
             //Mesh m = CreateMesh(100, 100);
             

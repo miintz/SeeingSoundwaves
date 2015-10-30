@@ -25,7 +25,7 @@ public class Dot  {
     
     public List<Color> Colors = new List<Color>();
 
-    string FPSname = "CenterFPS";
+    string FPSname = "MobileFPS";
 
     public Dot(int _id)
     {
