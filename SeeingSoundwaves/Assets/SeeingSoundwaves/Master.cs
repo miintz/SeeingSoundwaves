@@ -15,6 +15,8 @@ public class Master : MonoBehaviour {
     public bool DisableMovement = false;
     public bool ColorBounce = false;
     public bool NeglibleRadius = false;
+    public bool DrawLines = false;
+    public bool DrawMesh = false;
 
     List<Dot[]> MasterList;
 
@@ -62,32 +64,7 @@ public class Master : MonoBehaviour {
         return points;
     }
 
-    Mesh CreateMesh(float width, float height)
-    {
-        Mesh m = new Mesh();
-        m.name = "ScriptedMesh";
-
-        m.vertices = new Vector3[] 
-        {
-            new Vector3(-width, -height, 0.01f),
-            new Vector3(width, -height, 0.01f),
-            new Vector3(width, height, 0.01f),
-            new Vector3(-width, height, 0.01f)
-        };
-        
-        m.uv = new Vector2[] 
-        {
-            new Vector2 (0, 0),
-            new Vector2 (0, 1),
-            new Vector2 (1, 1),
-            new Vector2 (1, 0)
-        };
-
-        m.triangles = new int[] { 0, 1, 2, 0, 2, 3 };
-        m.RecalculateNormals();
-
-        return m;
-    }
+    
 
 	void Update () 
     {
@@ -136,33 +113,7 @@ public class Master : MonoBehaviour {
         //click so add thingies
         if (Input.GetKeyDown("b") || Input.GetKeyDown("joystick button 5"))
         {            
-            //Mesh m = CreateMesh(100, 100);
             
-            //GameObject plane = new GameObject("Plane");
-            
-            //MeshFilter meshFilter = (MeshFilter)plane.AddComponent(typeof(MeshFilter));
-            //meshFilter.mesh = CreateMesh(1, 0.2f);
-            
-            //MeshRenderer renderer = plane.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
-            //renderer.material.shader = Shader.Find("Particles/Additive");
-            
-            //Texture2D tex = new Texture2D(1, 1);
-            //tex.SetPixel(0, 0, Color.green);
-            //tex.Apply();
-            
-            //renderer.material.mainTexture = tex;
-            //renderer.material.color = Color.green;
-
-            //plane.transform.position += new Vector3(0.0f, 4.0f);
-            
-            //m.vertices = new Vector3[]{
-            //    new Vector3(-20, -20, 0.01f),
-            //    new Vector3(20, -20, 0.01f),
-            //    new Vector3(20, 20, 0.01f),
-            //    new Vector3(-20, 20, 0.01f)
-            //};
-            
-            //plane.transform.localScale = new Vector3(1.0f, 1.0f);
 
             //return;    
 
@@ -235,6 +186,8 @@ public class Master : MonoBehaviour {
 
                     Dots[i] = new Dot(x, y, z, difx, dify, difz, lastId + i, NeglibleRadius);                    
                     Dots[i].Disabled = DisableMovement;
+                    Dots[i].DrawLines = DrawLines;
+                    Dots[i].DrawMesh = DrawMesh;
                 }
 
                 MasterList.Add(Dots);
