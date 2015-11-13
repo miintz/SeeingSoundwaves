@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using System.IO;
+using UnityEditor;
 
 public class Dot
 {
@@ -118,7 +119,44 @@ public class Dot
                     float distance = heading.magnitude;
                     Vector3 direction = heading / distance;
 
-                    Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Colors[Bounces]); //turn on gizmos in unity window              
+                    Vector3 startTangent = Target;
+                    startTangent += new Vector3(0.0f, 1.0f, 0.0f);
+
+
+                    Vector3 endTangent = direction * distance;
+                    endTangent += new Vector3(0.0f, 1.0f, 0.0f);
+
+                    //Handles.color = Colors[Bounces];
+
+
+                    // Handles.DrawBezier(Target, direction * distance, startTangent, endTangent, Colors[Bounces], null, HandleUtility.GetHandleSize(Vector3.zero) * 0.1f);
+                    //Handles.DrawBezier(Vector3.zero, Vector3., Vector3.up, Vector3.down, Color.red, null, HandleUtility.GetHandleSize(Vector3.zero) * 0.1f);
+                    //Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Colors[Bounces]); //turn on gizmos in unity window              
+
+                    int numberOfSubdivisions = 10;
+
+                    numberOfSubdivisions = Mathf.Max(1, numberOfSubdivisions);
+                    Vector3[] array = new Vector3[numberOfSubdivisions + 1];
+
+                    // B(t) = (1-t)^3 * startPosition + 3 * (1-t)^2 * t * startTangent + 3 * (1-t) * t^2 * endTangent + t^3 * endPosition, t=[0,1]
+                    for (int o = 0; o <= numberOfSubdivisions; o++)
+                    {
+                        float t = o / (float)numberOfSubdivisions;
+                        float omt = 1.0f - t; // One minus t = omt
+                        array[o] = DrawObject.transform.position * (omt * omt * omt) +
+                            startTangent * (3 * omt * omt * t) +
+                            endTangent * (3 * omt * t * t) +
+                            (Target) * (t * t * t);
+
+                        
+                        //endPosition * (t * t * t);
+
+                        if (o > 0)
+                        {
+                            //Gizmos.DrawLine(array[o - 1], array[o]);
+                            Debug.DrawLine(array[o - 1], array[o], Colors[Bounces]);
+                        }
+                    }
                 }
             }
         }
