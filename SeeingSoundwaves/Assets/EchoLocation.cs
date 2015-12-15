@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.IO;
 
 public class EchoLocation : MonoBehaviour {
 
+    public bool EnableEchoLocation = false;
+
 	// Use this for initialization
 	void Start () {
-	
+        GetComponent<Camera>().depth = 0;
 	}
 
     Texture2D previousFrame;
@@ -18,13 +21,18 @@ public class EchoLocation : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            // = true;
             TakeHiResShot();
-            //GetComponent<Camera>().enabled = !GetComponent<Camera>().enabled;
+            //GetComponent<Camera>().enabled = false;
         }
 
         if(previousFrame != null)
         {
-            Debug.Log("overlay camera?");   
+            byte[] fileData = File.ReadAllBytes(string.Format("{0}/screenshots/screen.png", Application.dataPath));
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(fileData);
+
+            GameObject.Find("Viewport").GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
         }
 	}
 
@@ -32,16 +40,19 @@ public class EchoLocation : MonoBehaviour {
     {
         o++;
 
-        return string.Format("{0}/screenshots/screen_{1}_{2}.png",
-                             Application.dataPath,
-                             o,
-                             (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+        return string.Format("{0}/screenshots/screen.png", Application.dataPath);
+
+        //return string.Format("{0}/screenshots/screen_{1}_{2}.png",
+                             //Application.dataPath,
+                             //o,
+                             //(Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
         
         
     }
+
     public void TakeHiResShot()
-    {
-        takeHiResShot = true;
+    {       
+        takeHiResShot = EnableEchoLocation;
     }
 
     void LateUpdate()
@@ -64,13 +75,16 @@ public class EchoLocation : MonoBehaviour {
             GetComponent<Camera>().targetTexture = null;
             RenderTexture.active = null; // JC: added to avoid errors
 
+            previousFrame = screenShot;
+
             Destroy(rt);
 
             byte[] bytes = screenShot.EncodeToPNG();
             string filename = ScreenShotName(resWidth, resHeight);
 
             System.IO.File.WriteAllBytes(filename, bytes);
-            Debug.Log(string.Format("Took screenshot to: {0}", filename));
+            
+            //Debug.Log(string.Format("Took screenshot to: {0}", filename));
             
             takeHiResShot = false;       
         }
