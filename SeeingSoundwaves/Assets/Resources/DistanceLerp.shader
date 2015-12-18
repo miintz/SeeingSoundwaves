@@ -3,6 +3,7 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 	Properties {
 		_mainTexture("Texture", 2D) = "white" {}
 		_range("Range", Float) = 100
+		_dropoff("Drop off", Float) = 0.1
      }
      
      SubShader {
@@ -19,9 +20,10 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 			#pragma vertex vert 
 			#pragma fragment frag
           
-			#include "UnityCG.cginc"
+			#include "UnityCG.cginc" //wat doet dit
           
 			float _range;
+			float _dropoff;
 			sampler2D _mainTexture;
           
 			struct vertIn{
@@ -42,7 +44,15 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				o.tex = i.texCoord;
              
 				o.color = v.color;
-				o.color.a = distance(mul(_Object2World, v.vertex), _WorldSpaceCameraPos) / _range;
+				//
+				float dist = distance(mul(_Object2World, v.vertex), _WorldSpaceCameraPos) / _range;
+				if(dist < _dropoff) {
+					o.color.a = 0;
+				}
+				else if (dist > _dropoff) {
+					o.color.a = dist;
+				}
+				
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 
 				return o;
