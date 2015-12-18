@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 public class EchoLocation : MonoBehaviour {
 
@@ -19,6 +20,17 @@ public class EchoLocation : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+        //Vector4 v = new Vector4(GetComponent<Camera>().transform.position.x, GetComponent<Camera>().transform.position.y, GetComponent<Camera>().transform.position.z, 0.0f);
+        //GameObject cu = GameObject.FindGameObjectWithTag("DebugCube");
+        //if (cu != null)
+        //{
+        //    Material mat = (Material)Resources.Load("distanceLerp", typeof(Material));
+
+        //    mat.SetVector("_CameraPosition", GetComponent<Camera>().transform.position);
+        //    mat.SetFloat("_CameraDistance", Vector4.Distance(v, cu.transform.position));
+        //}
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // = true;
@@ -35,6 +47,8 @@ public class EchoLocation : MonoBehaviour {
             GameObject.Find("Viewport").GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
         }
 	}
+
+   
 
     public static string ScreenShotName(int width, int height)
     {
