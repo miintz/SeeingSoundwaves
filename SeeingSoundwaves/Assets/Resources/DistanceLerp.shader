@@ -47,12 +47,18 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				//
 				float dist = distance(mul(_Object2World, v.vertex), _WorldSpaceCameraPos) / _range;
 				if(dist < _dropoff) {
-					o.color.a = 0;
+					//o.color.a = 0;									
+					o.color.r = 0.0f;
+					o.color.g = 0.0f;
+					o.color.b = 0.0f;
 				}
 				else if (dist > _dropoff) {
-					o.color.a = dist;
+					//o.color.a = dist;								
+					o.color.r = dist;
+					o.color.g = dist;
+					o.color.b = dist;
 				}
-				
+
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 
 				return o;
