@@ -8,7 +8,8 @@ Shader "SeeingSoundwaves/DistanceLerp" {
      
      SubShader {
 		Tags { "Queue" = "Transparent" } 
-        // draw after all opaque geometry has been drawn
+        // draw after all opaque geometry has been drawn		
+
 		Pass {
 			ZWrite Off // don't write to depth buffer 
              // in order not to occlude other objects
@@ -44,19 +45,19 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				o.tex = i.texCoord;
              
 				o.color = v.color;
-				//
+				
 				float dist = distance(mul(_Object2World, v.vertex), _WorldSpaceCameraPos) / _range;
 				if(dist < _dropoff) {
 					//o.color.a = 0;									
-					o.color.r = 0.0f;
-					o.color.g = 0.0f;
-					o.color.b = 0.0f;
+					o.color.r = 1.0f;
+					o.color.g = 1.0f;
+					o.color.b = 1.0f;
 				}
 				else if (dist > _dropoff) {
 					//o.color.a = dist;								
-					o.color.r = dist;
-					o.color.g = dist;
-					o.color.b = dist;
+					o.color.r = 1.0 - dist;
+					o.color.g = 1.0 - dist;
+					o.color.b = 1.0 - dist;
 				}
 
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
@@ -79,6 +80,15 @@ Shader "SeeingSoundwaves/DistanceLerp" {
   
 			ENDCG  
 		}
+		
+		Blend OneMinusDstColor OneMinusSrcAlpha //invert blending, so long as FG color is 1,1,1,1
+        BlendOp Add		
+
+		Pass {
+			Zwrite On
+			ColorMask 0
+		}
+		
      }
  }
 
