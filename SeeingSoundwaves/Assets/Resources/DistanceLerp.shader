@@ -4,6 +4,7 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 		_mainTexture("Texture", 2D) = "white" {}
 		_range("Range", Float) = 100
 		_dropoff("Drop off", Float) = 0.1
+		_strength("Strength", Float) = 100.0	
      }
      
      SubShader {
@@ -25,9 +26,10 @@ Shader "SeeingSoundwaves/DistanceLerp" {
           
 			float _range;
 			float _dropoff;
+			float _strength; 
 			sampler2D _mainTexture;
           
-			struct vertIn{
+			struct vertIn {
 				 float4 vertexPosition : POSITION;
 				 float4 color : COLOR;
 				 float4 texCoord : TEXCOORD0;
@@ -55,9 +57,9 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				}
 				else if (dist > _dropoff) {
 					//o.color.a = dist;								
-					o.color.r = 1.0 - dist;
-					o.color.g = 1.0 - dist;
-					o.color.b = 1.0 - dist;
+					o.color.r = (1.0 - dist) * (_strength / 100);
+					o.color.g = (1.0 - dist) * (_strength / 100);
+					o.color.b = (1.0 - dist) * (_strength / 100);
 				}
 
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
@@ -65,7 +67,7 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				return o;
 			}
               
-			struct fragOut{
+			struct fragOut {
 				float4 color : COLOR;
 			};
               

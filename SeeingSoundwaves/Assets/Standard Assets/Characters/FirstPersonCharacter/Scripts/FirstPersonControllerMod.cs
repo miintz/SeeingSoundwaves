@@ -136,8 +136,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
             else
                 CameraPosition += m_MoveDir * Time.fixedDeltaTime;
-
-            Debug.Log(CameraPosition);
+            
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
