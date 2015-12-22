@@ -42,8 +42,8 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 			v2f vert(vertIn i, appdata_full v) 
 			{
 				v2f o;
-				o.tex = i.texCoord;
-             
+
+				o.tex = i.texCoord;             
 				o.color = v.color;
 				
 				float dist = distance(mul(_Object2World, v.vertex), _WorldSpaceCameraPos) / _range;

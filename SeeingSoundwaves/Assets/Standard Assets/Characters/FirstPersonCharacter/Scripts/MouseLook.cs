@@ -20,12 +20,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private Quaternion m_CameraTargetRot;
 
 
+        public Quaternion getLocalCameraRotation()
+        {         
+            return this.m_CameraTargetRot;
+        }
+
+        public Quaternion getLocalCharacterRotation()
+        {            
+            return this.m_CharacterTargetRot;
+        }
+
         public void Init(Transform character, Transform camera)
         {
             m_CharacterTargetRot = character.localRotation;
             m_CameraTargetRot = camera.localRotation;
         }
-
 
         public void LookRotation(Transform character, Transform camera)
         {
@@ -42,6 +51,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 character.localRotation = Quaternion.Slerp (character.localRotation, m_CharacterTargetRot,
                     smoothTime * Time.deltaTime);
+
                 camera.localRotation = Quaternion.Slerp (camera.localRotation, m_CameraTargetRot,
                     smoothTime * Time.deltaTime);
             }
@@ -52,8 +62,38 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
         }
 
+        public Quaternion[] LookRotation(Transform character, Transform camera, Boolean dummy)
+        {
+            float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * XSensitivity;
+            float xRot = CrossPlatformInputManager.GetAxis("Mouse Y") * YSensitivity;
 
-        Quaternion ClampRotationAroundXAxis(Quaternion q)
+            m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
+            m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
+
+            Quaternion ch = new Quaternion();
+            Quaternion ca = new Quaternion();
+
+            if (clampVerticalRotation)
+                m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot);
+
+            if (smooth)
+            {
+                ch = Quaternion.Slerp(character.localRotation, m_CharacterTargetRot,
+                    smoothTime * Time.deltaTime);
+
+                ch = Quaternion.Slerp(camera.localRotation, m_CameraTargetRot,
+                    smoothTime * Time.deltaTime);
+            }
+            else
+            {
+                ch = m_CharacterTargetRot;
+                ca = m_CameraTargetRot;
+            }
+
+            return new Quaternion[] { ca, ch };
+        }
+
+        public Quaternion ClampRotationAroundXAxis(Quaternion q)
         {
             q.x /= q.w;
             q.y /= q.w;
