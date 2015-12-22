@@ -36,7 +36,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private Vector2 m_Input;
         private Vector3 m_MoveDir = Vector3.zero;
         private CharacterController m_CharacterController;
-        private CollisionFlags m_CollisionFlags;
+        public CollisionFlags m_CollisionFlags;
         private bool m_PreviouslyGrounded;
         private Vector3 m_OriginalCameraPosition;
         private float m_StepCycle;
@@ -46,10 +46,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private Quaternion LookRotation;
         private Quaternion CharacterRotation;
+        private Vector3 CameraPosition;
 
         // Use this for initialization
         private void Start()
-        {            
+        {
             m_CharacterController = GetComponent<CharacterController>();
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
@@ -60,6 +61,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+            CameraPosition = m_CharacterController.transform.localPosition;
         }
 
 
@@ -115,8 +118,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (m_CharacterController.isGrounded)
             {
-                m_MoveDir.y = -m_StickToGroundForce;
-
                 if (m_Jump)
                 {
                     m_MoveDir.y = m_JumpSpeed;
@@ -129,7 +130,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
             }
-            m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
+
+            //dit is beweging, dus wat als ik dit niet wil doen?
+            if (!m_Block)
+                m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
+            else
+                CameraPosition += m_MoveDir * Time.fixedDeltaTime;
+
+            Debug.Log(CameraPosition);
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
@@ -178,9 +186,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_FootstepSounds[0] = m_AudioSource.clip;
         }
 
-        public Vector3 GetCameraPosition()
+        public Vector3 GetCameraMoveDirection()
         {
-            return m_Camera.transform.localPosition;
+            return CameraPosition;
         }
 
         public Quaternion GetCharacterRotation()
@@ -195,6 +203,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void UpdateCameraPosition(float speed)
         {
+         
             Vector3 newCameraPosition;
             if (!m_UseHeadBob)
             {
@@ -204,7 +213,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Camera.transform.localPosition =
                     m_HeadBob.DoHeadBob(m_CharacterController.velocity.magnitude +
-                                      (speed*(m_IsWalking ? 1f : m_RunstepLenghten)));
+                                        (speed * (m_IsWalking ? 1f : m_RunstepLenghten)));
+
                 newCameraPosition = m_Camera.transform.localPosition;
                 newCameraPosition.y = m_Camera.transform.localPosition.y - m_JumpBob.Offset();
             }
@@ -213,7 +223,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 newCameraPosition = m_Camera.transform.localPosition;
                 newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
             }
-            m_Camera.transform.localPosition = newCameraPosition;
+
+            m_Camera.transform.localPosition = newCameraPosition;           
         }
 
 
