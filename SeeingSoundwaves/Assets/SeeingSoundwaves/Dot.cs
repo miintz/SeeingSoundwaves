@@ -5,48 +5,96 @@ using System;
 public class Dot  {
     
     public Vector3 Velocity;// { get; set; }
+    
     Vector3 Position;// { get; set; }
     Vector3 Scale;
 
-    public float Strength { get; set; }    
     float Radius { get; set; }
     float Speed { get; set; }
-    public int Id { get; set; }
+    public float Strength { get; set; }    
     
-    public GameObject DrawObject;
+    public int Id { get; set; }
+    public int Bounces { get; set; }
     
     public Boolean Disposed = false;
+    public Boolean Disabled = false;
+
+    public GameObject DrawObject;
+
+    public List<int> Closest = new List<int>();
+    
+    public List<Color> Colors = new List<Color>();
+
+    string FPSname = "MobileFPS";
 
     public Dot(int _id)
     {
         this.Id = _id;
         Disposed = true;
+        
+        Bounces = 0;
+        
+        Colors.Add(Color.red);
+        Colors.Add(Color.yellow);
+        Colors.Add(Color.green);
+        Colors.Add(Color.cyan);
+        Colors.Add(Color.blue);
+        Colors.Add(Color.magenta);
+
     }
 
-	public Dot(float _x, float _y, float _dirx, float _diry, int _id) 
+	public Dot(float _x, float _y, float _z, float _dirx, float _diry, float _dirz, int _id, Boolean _neglible) 
     {
         this.Speed = 3.5f;
         this.Strength = 1.0f;
 
-        this.Position = new Vector3(_x, _y);
-        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry), new Vector3(0.1f,0.1f));
-       
-        this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
+        this.Position = new Vector3(_x, _y, _z);
+        this.Velocity = Vector3.Scale(new Vector3(_dirx, _diry, _dirz), new Vector3(0.1f,0.1f,0.1f));
+
+        if (!_neglible)
+        {
+            this.Scale = new Vector3(0.3f, 0.3f, 0.3f);
+        }
+        else
+        {
+            this.Scale = new Vector3(0.001f, 0.001f, 0.001f); //not working
+        }
 
         this.Id = _id;
         
-        DrawObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        DrawObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);        
         DrawObject.transform.localScale = this.Scale;
         DrawObject.transform.position = this.Position;
 
-        DrawObject.AddComponent<Rigidbody>();
+        DrawObject.AddComponent<Rigidbody>();        
         DrawObject.GetComponent<Rigidbody>().mass = 1.0f;
         DrawObject.GetComponent<Rigidbody>().useGravity = false;
 
-        DrawObject.AddComponent<Collidable>();
+        DrawObject.AddComponent<Collidable>();        
 
         DrawObject.name = this.Id.ToString();               
 	}
+    Mesh CreateMesh(float width, float height)
+    {
+        Mesh m = new Mesh();
+        m.name = "ScriptedMesh";
+        m.vertices = new Vector3[] {
+         new Vector3(-width, -height, 0.01f),
+         new Vector3(width, -height, 0.01f),
+         new Vector3(width, height, 0.01f),
+         new Vector3(-width, height, 0.01f)
+     };
+        m.uv = new Vector2[] {
+         new Vector2 (0, 0),
+         new Vector2 (0, 1),
+         new Vector2(1, 1),
+         new Vector2 (1, 0)
+     };
+        m.triangles = new int[] { 0, 1, 2, 0, 2, 3 };
+        m.RecalculateNormals();
+
+        return m;
+    }
 
     public void Dispose()
     {
@@ -56,16 +104,69 @@ public class Dot  {
 
     void Start() { }
 
-	public void Update () {        
-        Decay(1);   
+	public void Update () 
+    {
+        if (!Disabled)
+        {            
+            Decay(1);
 
-        float form = 0.3f * this.Strength;
-         
-        this.Scale = new Vector3(form, form, form);        
-        DrawObject.transform.localScale = this.Scale;
+            float form = 0.3f * this.Strength;
 
-       
-        DrawObject.transform.position += this.Velocity;
+            this.Scale = new Vector3(form, form, form);
+
+            DrawObject.transform.localScale = this.Scale;
+            DrawObject.transform.position += this.Velocity;
+            
+            if (Closest.Count > 0)
+            {
+                foreach (int i in Closest)
+                {
+                    Dot a = GameObject.Find(this.FPSname).GetComponent<Master>().getDot(i);
+                    if (a != null)
+                    {
+                        Vector3 Target = a.DrawObject.transform.position;
+                        
+                        Vector3 heading = Target - this.DrawObject.transform.position;
+                        float distance = heading.magnitude;
+                        Vector3 direction = heading / distance;
+
+                        switch (Bounces)
+                        {
+                            case 0:                               
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.red);
+                                break;
+                            case 1:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.green);
+                                break;
+                            case 2:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.blue);
+                                break;
+                            case 3:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.cyan);
+                                break;
+                            case 4:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.magenta);
+                                break;
+                            case 5:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, Color.yellow);
+                                break;
+                            case 6:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(255, 153, 0));
+                                break;
+                            case 7:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(51, 51, 0));
+                                break;
+                            case 8:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(153, 255, 204));
+                                break;
+                            case 9:
+                                Debug.DrawRay(this.DrawObject.transform.position, direction * distance, new Color(0, 102, 102));
+                                break;
+                        }
+                    }
+                }
+            }
+        }     
 	}
 
     public void Decay(int s)
@@ -164,7 +265,6 @@ public class Dot  {
                     }
                     else if (Col.SQUARE) //convex is a bit wonky
                     {
-
                         float d1 = Vector2.Distance(this.Position, Points[0]);
                         float d2 = Vector2.Distance(this.Position, Points[1]);
                         float d3 = Vector2.Distance(this.Position, Points[2]);
