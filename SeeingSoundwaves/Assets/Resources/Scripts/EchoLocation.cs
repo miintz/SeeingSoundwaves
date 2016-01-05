@@ -48,10 +48,8 @@ public class EchoLocation : MonoBehaviour
         if (EnableEchoLocation)
         {
             //first update the microphone
-              Microfoon.Update();
-             
+            Microfoon.Update();
             
-
             CameraPosition = Character.GetCameraMoveDirection();
             CameraRotation = Character.GetCameraRotation();
             CharacterRotation = Character.GetCharacterRotation();
@@ -62,7 +60,7 @@ public class EchoLocation : MonoBehaviour
             //if (Input.GetKeyDown(KeyCode.F)) //dit is dus als de buffer gevuld is. 
             if (Microfoon.loudness > MicrophoneLowLimit)
             {
-                Debug.Log("SET:" + Microfoon.loudness);
+                //Debug.Log("SET:" + Microfoon.loudness);
 
                 transform.localRotation = CharacterRotation;
                 Camera.main.transform.localRotation = CameraRotation;
@@ -114,6 +112,10 @@ public class EchoLocation : MonoBehaviour
             }
         }
 	}
+    void PlayAudioSource()
+    {
+        GetComponent<AudioSource>().Play(); // Play the audio source!
+    }
 
     List<GameObject> getObjectsByMaterialName(string name)
     {
