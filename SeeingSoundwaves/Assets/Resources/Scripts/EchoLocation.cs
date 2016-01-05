@@ -54,6 +54,10 @@ public class EchoLocation : MonoBehaviour
             CameraRotation = Character.GetCameraRotation();
             CharacterRotation = Character.GetCharacterRotation();
 
+            transform.localRotation = CharacterRotation;
+            Camera.main.transform.localRotation = CameraRotation;
+            transform.localPosition = CameraPosition;
+            
             //CharacterRotation is de FPSController gameobject (over X)
             //CameraRotation is de camera IN de FPSController (over Y)
             
@@ -61,11 +65,6 @@ public class EchoLocation : MonoBehaviour
             if (Microfoon.loudness > MicrophoneLowLimit)
             {
                 //Debug.Log("SET:" + Microfoon.loudness);
-
-                transform.localRotation = CharacterRotation;
-                Camera.main.transform.localRotation = CameraRotation;
-                transform.localPosition = CameraPosition;
-
                 fading = true;
 
                 //reset everything too 100
@@ -114,7 +113,8 @@ public class EchoLocation : MonoBehaviour
 	}
     void PlayAudioSource()
     {
-        GetComponent<AudioSource>().Play(); // Play the audio source!
+        //GetComponent<AudioSource>().clip = Microphone.Start(null, true, 1, 48000);
+        GetComponent<AudioSource>().Play(); // Play the audio source!        
     }
 
     List<GameObject> getObjectsByMaterialName(string name)

@@ -57,9 +57,9 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				}
 				else if (dist > _dropoff) {
 					//o.color.a = dist;								
-					o.color.r = (1.0 - dist) * (_strength / 100);
-					o.color.g = (1.0 - dist) * (_strength / 100);
-					o.color.b = (1.0 - dist) * (_strength / 100);
+					o.color.r = (1.0 - dist) * (_strength * 0.01);
+					o.color.g = (1.0 - dist) * (_strength * 0.01);
+					o.color.b = (1.0 - dist) * (_strength * 0.01);
 				}
 
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);

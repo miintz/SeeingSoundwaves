@@ -17,7 +17,7 @@ public class MicIn
         sensitivity = _sensitivity;
         parent = _parent;
         loudness = 0;
-
+  
         parent.GetComponent<AudioSource>().clip = Microphone.Start(null, true, 1, 48000);
 
         parent.GetComponent<AudioSource>().loop = false; // Set the AudioClip to loop
@@ -27,7 +27,9 @@ public class MicIn
         parent.GetComponent<AudioSource>().bypassReverbZones = true;
         parent.GetComponent<AudioSource>().spatialBlend = 0.0f;
         parent.GetComponent<AudioSource>().reverbZoneMix = 0.0f;
-
+        
+        while (!(Microphone.GetPosition(null) > 0)) { } //this seems to fix the latency issue. i know its bad code, fuck off. 
+        
         parent.GetComponent<AudioSource>().Play(); // Play the audio source!
         parent.InvokeRepeating("PlayAudioSource", 1.0f, 1.0f);
     }
@@ -39,17 +41,16 @@ public class MicIn
 
     float GetAveragedVolume()
     {
+        //it should *move* the buffer forward when there is sound, else there is a delay. MAAR HOE DE FOK MOET DAT GVD.
+        
         float[] data = new float[256];
         float a = 0;
         
         parent.GetComponent<AudioSource>().GetOutputData(data, 0);                
         
         for (int i = 0; i < 256; i++)
-        {
-            //a += Mathf.Abs(s); //gewoon som van de hele buffer.            
-            a += Mathf.Abs(data[i]);            
-            //laten de som van de laatste helft doen
-
+        {           
+            a += Mathf.Abs(data[i]);                        
         }
         
         return a / 256; 
