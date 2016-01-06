@@ -35,8 +35,14 @@ public class MicIn
     }
 
     public void Update()
-    {        
-        loudness = GetAveragedVolume() * sensitivity;        
+    {
+        if (((EchoLocation)parent).MicrophonelessMode && Input.GetKeyDown(KeyCode.F))
+        {
+            Debug.Log(" yes?");
+            loudness = 40.0f;
+        }
+        else
+            loudness = GetAveragedVolume() * sensitivity;        
     }
 
     float GetAveragedVolume()
