@@ -30,7 +30,7 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 			sampler2D _mainTexture;
           
 			struct vertIn {
-				 float4 vertexPosition : POSITION;
+				 float4 vertexPosition : POSITION;				
 				 float4 color : COLOR;
 				 float4 texCoord : TEXCOORD0;
 			};
@@ -57,7 +57,8 @@ Shader "SeeingSoundwaves/DistanceLerp" {
 				}
 				else if (dist > _dropoff) {
 					//o.color.a = dist;								
-					o.color.r = (1.0 - dist) * (_strength * 0.01);
+					//strength van de shader. 
+					o.color.r = (1.0 - dist) * (_strength * 0.01); 
 					o.color.g = (1.0 - dist) * (_strength * 0.01);
 					o.color.b = (1.0 - dist) * (_strength * 0.01);
 				}

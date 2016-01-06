@@ -24,13 +24,13 @@ public class MicIn
         parent.GetComponent<AudioSource>().mute = false; // Mute the sound, we don't want the player to hear it
         
         parent.GetComponent<AudioSource>().bypassEffects = true;
-        parent.GetComponent<AudioSource>().bypassReverbZones = true;
+        parent.GetComponent<AudioSource>().bypassReverbZones = true; //also important, remmoves reverb so no feedback loops
         parent.GetComponent<AudioSource>().spatialBlend = 0.0f;
         parent.GetComponent<AudioSource>().reverbZoneMix = 0.0f;
         
         while (!(Microphone.GetPosition(null) > 0)) { } //this seems to fix the latency issue. i know its bad code, fuck off. 
         
-        parent.GetComponent<AudioSource>().Play(); // Play the audio source!
+        parent.GetComponent<AudioSource>().Play(); //play the audio source!
         parent.InvokeRepeating("PlayAudioSource", 1.0f, 1.0f);
     }
 

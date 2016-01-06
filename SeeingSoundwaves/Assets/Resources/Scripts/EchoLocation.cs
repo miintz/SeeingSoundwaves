@@ -37,9 +37,7 @@ public class EchoLocation : MonoBehaviour
             
             fading = true;
 
-            Microfoon = new MicIn(this, MicrophoneSensitivity);
-            
-           
+            Microfoon = new MicIn(this, MicrophoneSensitivity);           
         }
     }  
 
@@ -49,14 +47,7 @@ public class EchoLocation : MonoBehaviour
         {
             //first update the microphone
             Microfoon.Update();
-            
-            CameraPosition = Character.GetCameraMoveDirection();
-            CameraRotation = Character.GetCameraRotation();
-            CharacterRotation = Character.GetCharacterRotation();
 
-            transform.localRotation = CharacterRotation;
-            Camera.main.transform.localRotation = CameraRotation;
-            transform.localPosition = CameraPosition;
             
             //CharacterRotation is de FPSController gameobject (over X)
             //CameraRotation is de camera IN de FPSController (over Y)
@@ -64,6 +55,15 @@ public class EchoLocation : MonoBehaviour
             //if (Input.GetKeyDown(KeyCode.F)) //dit is dus als de buffer gevuld is. 
             if (Microfoon.loudness > MicrophoneLowLimit)
             {
+
+                CameraPosition = Character.GetCameraMoveDirection();
+                CameraRotation = Character.GetCameraRotation();
+                CharacterRotation = Character.GetCharacterRotation();
+
+                transform.localRotation = CharacterRotation;
+                Camera.main.transform.localRotation = CameraRotation;
+                transform.localPosition = CameraPosition;
+            
                 //Debug.Log("SET:" + Microfoon.loudness);
                 fading = true;
 
