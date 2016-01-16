@@ -11,6 +11,7 @@ public class EchoLocation : MonoBehaviour
 
     public bool EnableEchoLocation = true;
     public bool FadeOut = true;
+    public bool MicrophonelessMode = false;
     public float FadeSpeed = 0.1f;
     
     public float MicrophoneSensitivity = 100.0f;
@@ -47,15 +48,12 @@ public class EchoLocation : MonoBehaviour
         {
             //first update the microphone
             Microfoon.Update();
-
-            
             //CharacterRotation is de FPSController gameobject (over X)
             //CameraRotation is de camera IN de FPSController (over Y)
             
             //if (Input.GetKeyDown(KeyCode.F)) //dit is dus als de buffer gevuld is. 
-            if (Microfoon.loudness > MicrophoneLowLimit)
+            if ((Microfoon.loudness > MicrophoneLowLimit) || (MicrophonelessMode && Input.GetKeyDown(KeyCode.F)))
             {
-
                 CameraPosition = Character.GetCameraMoveDirection();
                 CameraRotation = Character.GetCameraRotation();
                 CharacterRotation = Character.GetCharacterRotation();
