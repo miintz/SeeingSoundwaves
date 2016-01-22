@@ -147,7 +147,6 @@ public class Insect : MonoBehaviour {
             //fleeing overides the flying
             if (Vector3.Distance(this.transform.position, GameObject.Find("Player").transform.position) < FleeingDistance)
             {
-                Debug.Log(name + " Fleeing");
                 Flee();
             }
 
