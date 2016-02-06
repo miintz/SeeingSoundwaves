@@ -14,7 +14,8 @@ public enum InsectPreset
 public class Insect : MonoBehaviour {
 	Vector3 InsectTransformPosition;
     Quaternion InsectTransformRotation = new Quaternion(0,0,0,0);
-
+    
+    public GameObject PlayerObject;
     public InsectPreset Preset;
     public bool Swarm = false;
     public int SwarmSize = 0;
@@ -70,6 +71,8 @@ public class Insect : MonoBehaviour {
                     i.transform.localScale = this.transform.localScale;
                     
                     i.AddComponent<Insect>();
+
+                    i.GetComponent<Insect>().PlayerObject = PlayerObject;
                     i.GetComponent<Insect>().CubeMode = CubeMode;
                     i.GetComponent<Insect>().Preset = Preset;
                     i.GetComponent<Insect>().Swarm = false;
@@ -166,7 +169,7 @@ public class Insect : MonoBehaviour {
             }
 
             //fleeing overides the flying
-            if (Vector3.Distance(this.transform.position, GameObject.Find("Player").transform.position) < FleeingDistance)
+            if (Vector3.Distance(this.transform.position, PlayerObject.transform.position) < FleeingDistance)
                 Flee();            
 
             if (this.transform.position != InsectTransformPosition)
@@ -350,16 +353,14 @@ public class Insect : MonoBehaviour {
 
     private void Flee()
     {
-        Debug.Log("fleeing");
-
-        float angle = Vector3.Angle(this.transform.position, GameObject.Find("Player").transform.position);
+        float angle = Vector3.Angle(this.transform.position, PlayerObject.transform.position);
         InsectTransformRotation = Quaternion.AngleAxis(angle, this.transform.forward);
-        
-        float distance = Vector3.Distance(this.transform.position, GameObject.Find("Player").transform.position);
 
-        float fx = (this.transform.position.x - GameObject.Find("Player").transform.position.x) / distance;
-        float fy = (this.transform.position.y - GameObject.Find("Player").transform.position.y) / distance;
-        float fz = (this.transform.position.z - GameObject.Find("Player").transform.position.z) / distance;
+        float distance = Vector3.Distance(this.transform.position, PlayerObject.transform.position);
+
+        float fx = (this.transform.position.x - PlayerObject.transform.position.x) / distance;
+        float fy = (this.transform.position.y - PlayerObject.transform.position.y) / distance;
+        float fz = (this.transform.position.z - PlayerObject.transform.position.z) / distance;
 
         Vector3 target = new Vector3(fx, fy, fz);
 
