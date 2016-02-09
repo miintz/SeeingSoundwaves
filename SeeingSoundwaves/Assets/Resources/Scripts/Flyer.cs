@@ -5,7 +5,7 @@ public class Flyer : MonoBehaviour {
 
     Camera Cam;
     public float lookSensitivity = 1;
-    public float topspeed;
+    public float topspeed = 4.0f;
     public float defaultSpeedDecay = 0.01f;
     public float triggeredSpeedDecay = 0.05f;
 
@@ -63,10 +63,14 @@ public class Flyer : MonoBehaviour {
         }
         else
         { 
-            //mouse
+            //keyboard
+            if (Input.GetKey("a"))
+                xVelocity += 1.0f;                            
+            else if (Input.GetKey("d"))
+                xVelocity -= defaultSpeedDecay; //slerpen nog, nu is het nog niet erg soepel.            
         }
-
-        xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed);
+        
+        xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed        
 
         transform.position += transform.forward * (xVelocity / 10) ;
 	}
