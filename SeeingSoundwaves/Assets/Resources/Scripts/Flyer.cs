@@ -20,9 +20,10 @@ public class Flyer : MonoBehaviour {
     float lookSmoothDamp;
     float xVelocity;
 
-    public bool Controller = true;
-    
-    public bool m_Block = true;
+    public bool Controller = false;
+    public bool GearVR = true;
+
+    public bool m_Block = false;
 
 	// Use this for initialization
 	void Start () {
@@ -49,8 +50,8 @@ public class Flyer : MonoBehaviour {
         currentXrot = Mathf.SmoothDamp(currentXrot, xRot, ref xRotV, lookSmoothDamp);
         currentYrot = Mathf.SmoothDamp(currentYrot, yRot, ref yRotV, lookSmoothDamp);
 
-        if (!m_Block)
-            transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+        //if (!m_Block)
+        //    transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
 
         if (Controller)
         {
@@ -67,30 +68,46 @@ public class Flyer : MonoBehaviour {
             }
         }
         else
-        { 
-            //keyboard
-            if (Input.GetKey("w"))
-                xVelocity += 0.5f / speedMod;                            
-            else if (Input.GetKey("s"))
-                xVelocity -= 0.5f / speedMod; //slerpen nog, nu is het nog niet erg soepel.            
-        }
+        {
+            if (!GearVR)
+            {
+                //keyboard
+                if (Input.GetKey("w"))
+                    xVelocity += 0.5f / speedMod;
+                else if (Input.GetKey("s"))
+                    xVelocity -= 0.5f / speedMod; //slerpen nog, nu is het nog niet erg soepel.            
+            }
+            else
+            {
+                if (Input.GetAxis("Mouse X") != 0.0f)
+                {
+                    Debug.Log("Value: " + Input.GetAxis("Mouse X") + " " + xVelocity); //het is een delta!!!
+                    
+                    if(Input.GetAxis("Mouse X") > 0.0f)
+                        xVelocity += Input.GetAxis("Mouse X") / speedMod;
+                    else
+                        xVelocity -= Input.GetAxis("Mouse X") / speedMod;
+                }
 
+                if (Input.GetAxis("Mouse Y") < 0.0f)
+                { }
+                
+            }
+        }
 
         xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed                
         
         if(!m_Block)
-                transform.position += transform.forward * (xVelocity / 10);
+            transform.position += transform.forward * (xVelocity / 10);
 
         //checkCloseness();
 	}
 
     void OnCollisionEnter(Collision col)
     {
-        Debug.Log("Test?");
         if (col.gameObject.tag == "Insect")
         {
-            GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
-            //Destroy(col.gameObject);            
+            GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);                 
             col.gameObject.SetActive(false);
         }        
     }

@@ -47,8 +47,8 @@ public class EchoLocationFlyer : MonoBehaviour
 
         fading = true;
 
-        if (!Blocking)
-            Character.m_Block = false;
+        //if (!Blocking)
+        //    Character.m_Block = false;
     }  
 
     // Update is called once per frame
@@ -60,8 +60,8 @@ public class EchoLocationFlyer : MonoBehaviour
 
             if (Microfoon.loudness > MicrophoneLowLimit)
             {
-                if(Blocking)
-                    Character.m_Block = false;
+                //if(Blocking)
+                //    Character.m_Block = false;
 
                 fading = true;
 
@@ -97,8 +97,8 @@ public class EchoLocationFlyer : MonoBehaviour
                     }
                 }
             }
-            else if(Blocking)
-                Character.m_Block = true;
+            //else if(Blocking)
+            //    Character.m_Block = true;
 
             EchoCounter += Time.deltaTime * 1000;
 
