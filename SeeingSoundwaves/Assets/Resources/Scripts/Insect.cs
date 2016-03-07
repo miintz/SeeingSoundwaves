@@ -71,7 +71,7 @@ public class Insect : MonoBehaviour {
                     if (CubeMode)
                         i = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     else                    
-                        i = GameObject.CreatePrimitive(PrimitiveType.Sphere);                        
+                        i = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     
                     i.name = this.name + "Swarm" + Preset.ToString() + o;
 
@@ -110,9 +110,9 @@ public class Insect : MonoBehaviour {
                         i.GetComponent<MeshRenderer>().material = newMat;
                     }
 
-                    i.AddComponent<Rigidbody>();
-                    i.GetComponent<Rigidbody>().useGravity = false;
-                    i.GetComponent<Rigidbody>().angularDrag = 1000;
+                    //i.AddComponent<Rigidbody>();
+                    //i.GetComponent<Rigidbody>().useGravity = false;
+                    //i.GetComponent<Rigidbody>().angularDrag = 1000;
 
                     i.tag = "Insect";
                     i.layer = 9;

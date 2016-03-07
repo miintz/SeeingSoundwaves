@@ -86,11 +86,12 @@ public class Flyer : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
+        Debug.Log("Test?");
         if (col.gameObject.tag == "Insect")
         {
             GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
-            //Destroy(col.gameObject);
-            col.gameObject.SetActive(true);
+            //Destroy(col.gameObject);            
+            col.gameObject.SetActive(false);
         }        
     }
 }

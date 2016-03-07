@@ -35,19 +35,20 @@ public class EchoLocationFlyer : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        GameObjects = getObjectsByMaterialName("distanceLerp");
+
         if (EnableEchoLocation)
         {
             Character = GetComponent<Flyer>();
-            Character.m_Block = true; //singleton!!! handig
-            GameObjects = getObjectsByMaterialName("distanceLerp");
+            Character.m_Block = true; //singleton!!! handig            
             
-            fading = true;
-
-            Microfoon = new MicIn(this, MicrophoneSensitivity);
-
-            if (!Blocking)
-                Character.m_Block = false;
+            Microfoon = new MicIn(this, MicrophoneSensitivity);            
         }
+
+        fading = true;
+
+        if (!Blocking)
+            Character.m_Block = false;
     }  
 
     // Update is called once per frame
@@ -57,10 +58,10 @@ public class EchoLocationFlyer : MonoBehaviour
             //first update the microphone
             Microfoon.Update();
 
-            if (Microfoon.loudness > MicrophoneLowLimit || (KeyMode && Input.GetKey(KeyCode.A)))
+            if (Microfoon.loudness > MicrophoneLowLimit)
             {
                 if(Blocking)
-                Character.m_Block = false;
+                    Character.m_Block = false;
 
                 fading = true;
 
@@ -83,11 +84,6 @@ public class EchoLocationFlyer : MonoBehaviour
                         float s = material.GetFloat("_strength");
                         if (s < MaxShaderStrength)
                         {
-                            //if (s + (Microfoon.loudness * 5) < MicrophoneHighLimit)
-                            //    material.SetFloat("_strength", s + (Microfoon.loudness * 5));
-                            //else
-                            //    material.SetFloat("_strength", s + MicrophoneHighLimit);
-
                             if (EchoCounter > EchoTime || !UseTimer)
                             {                             
                                 if (s + (Microfoon.loudness * 5) < MicrophoneHighLimit)
@@ -118,6 +114,62 @@ public class EchoLocationFlyer : MonoBehaviour
                     {                      
                         material.SetFloat("_strength", s - FadeSpeed);
                     }                   
+                }
+            }
+
+            GameObjects = getObjectsByMaterialName("distanceLerp");
+        }
+        else if (KeyMode)
+        {
+            if (Input.GetKey(KeyCode.K))
+            {         
+                fading = true;
+
+                //reset everything too 100
+                foreach (GameObject o in GameObjects)
+                {
+                    //start the fading.
+                    var material = o.GetComponent<Renderer>().material;
+
+                    if (!fading) //start fading from the highest strength or microphone input strength
+                    {
+                        if (Microfoon.loudness * 5 < MicrophoneHighLimit)
+                            material.SetFloat("_strength", Microfoon.loudness * 5);
+                        else
+                            material.SetFloat("_strength", MicrophoneHighLimit);
+                    }
+                    else
+                    {
+                        //add to strength, but only if the strength isnt too high yet
+                        float s = material.GetFloat("_strength");
+                        if (s < MaxShaderStrength)
+                        {
+                            if (EchoCounter > EchoTime || !UseTimer)
+                            {                               
+                                material.SetFloat("_strength", s + 150);                               
+                                EchoCounter = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            //else if (Blocking)
+            //    Character.m_Block = true;
+
+            EchoCounter += Time.deltaTime * 1000;
+
+            if (fading && FadeOut)
+            {
+                foreach (GameObject o in GameObjects)
+                {
+                    //start the fading.
+                    var material = o.GetComponent<Renderer>().material;
+
+                    float s = material.GetFloat("_strength");
+                    if (s > 0)
+                    {
+                        material.SetFloat("_strength", s - FadeSpeed);
+                    }
                 }
             }
 
