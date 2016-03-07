@@ -33,13 +33,13 @@
           
 			struct vertIn {	
 				 float4 vertexPosition : POSITION;				
-				 float4 color : COLOR;
+				 fixed4 color : COLOR;
 				 float4 texCoord : TEXCOORD0;
 			};
           
 			struct v2f{
 				 float4 pos : SV_POSITION;				 
-				 float4 color : COLOR;
+				 fixed4 color : COLOR;
 				 float4 tex : TEXCOORD1;
 			};
   
@@ -68,7 +68,7 @@
 			}
               
 			struct fragOut {
-				float4 color : COLOR;
+				fixed4 color : COLOR;
 			};
               
 			fragOut frag(v2f i)
