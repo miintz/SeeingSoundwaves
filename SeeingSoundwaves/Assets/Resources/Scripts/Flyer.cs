@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Flyer : MonoBehaviour {
 
@@ -36,12 +37,12 @@ public class Flyer : MonoBehaviour {
         //looking
         if (Controller)
         {
-            yRot -= Input.GetAxis("Vertical") * lookSensitivity; //invert
+            yRot -= Input.GetAxis("Vertical") * lookSensitivity;
             xRot += Input.GetAxis("Horizontal") * lookSensitivity;
         }
         else
         {
-            yRot -= Input.GetAxis("Mouse Y") * lookSensitivity; //invert
+            yRot -= Input.GetAxis("Mouse Y") * lookSensitivity;
             xRot += Input.GetAxis("Mouse X") * lookSensitivity;
         }
 
@@ -51,7 +52,17 @@ public class Flyer : MonoBehaviour {
         currentYrot = Mathf.SmoothDamp(currentYrot, yRot, ref yRotV, lookSmoothDamp);
 
         //if (!m_Block)
-         transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+        //GameObject.FindGameObjectWithTag("Char").transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+
+         p = "Showing Input\n";
+         p += "Controller = " + Controller.ToString() + "\n";
+
+         if (Input.GetMouseButtonDown(0))
+         {
+             p += "Input: Tap\n";
+             System.Random r = new System.Random();   
+             //GameObject.FindGameObjectsWithTag("Insect").ToList().ForEach(t => t.GetComponent<Insect>().DebugObjectColor = new Color(UnityEngine.Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f)));
+         }
 
         if (Controller)
         {
@@ -81,27 +92,45 @@ public class Flyer : MonoBehaviour {
             {
                 if (Input.GetAxis("Mouse X") != 0.0f)
                 {
-                    Debug.Log("Value: " + Input.GetAxis("Mouse X") + " " + xVelocity); //het is een delta!!!
-                    
-                    if(Input.GetAxis("Mouse X") > 0.0f)
-                        xVelocity += Input.GetAxis("Mouse X") / speedMod;
+                    p += "Input: MouseX " + Input.GetAxis("Mouse X");
+
+                    if (Input.GetAxis("Mouse X") > 0.0f)
+                    {
+                        xVelocity -= 0.10f;
+                        //GameObject.FindGameObjectsWithTag("Insect").ToList().ForEach(t => t.GetComponent<Insect>().DebugObjectColor = new Color(UnityEngine.Random.Range(0.0f, 0.5f), Random.Range(0.0f, 0.5f), Random.Range(0.0f, 0.5f)));
+                    }
                     else
-                        xVelocity -= Input.GetAxis("Mouse X") / speedMod;
+                    {
+                        xVelocity += 0.10f;
+                        //GameObject.FindGameObjectsWithTag("Insect").ToList().ForEach(t => t.GetComponent<Insect>().DebugObjectColor = new Color(UnityEngine.Random.Range(0.5f, 1.0f), Random.Range(0.5f, 1.0f), Random.Range(0.5f, 1.0f)));
+                    }
                 }
 
-                if (Input.GetAxis("Mouse Y") < 0.0f)
-                { }
+                //if (Input.GetAxis("Mouse Y") < 0.0f)
+                //{
+                //    Debug.Log("Value: " + Input.GetAxis("Mouse Y") + " " + xVelocity); //het is een delta!!!
+
+                //    if (Input.GetAxis("Mouse Y") > 0.0f)
+                //        xVelocity += Input.GetAxis("Mouse Y") / speedMod;
+                //    else
+                //        xVelocity -= Input.GetAxis("Mouse X") / speedMod;
+                //}
                 
             }
         }
 
         xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed                
         
-        if(!m_Block)
-            transform.position += transform.forward * (xVelocity / 10);
+        //if(!m_Block)
+           GameObject.FindGameObjectWithTag("Char").transform.position += transform.forward * (xVelocity / 10);
 
         //checkCloseness();
 	}
+    string p = "";
+    private void OnGUI()
+    {
+        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), p);
+    }
 
     void OnCollisionEnter(Collision col)
     {

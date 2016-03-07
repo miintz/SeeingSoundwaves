@@ -11,6 +11,7 @@ public class EchoLocation : MonoBehaviour
 
     public bool EnableEchoLocation = true;
     public bool FadeOut = true;
+    public bool FlyerMode = true;
     public float FadeSpeed = 0.1f;
     
     public float MicrophoneSensitivity = 100.0f;
@@ -25,6 +26,8 @@ public class EchoLocation : MonoBehaviour
     private FirstPersonControllerMod Character;
     private Boolean fading = false;
     List<GameObject> GameObjects;
+
+    private bool m_Block = true;
 
     // Use this for initialization
     void Start()
