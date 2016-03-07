@@ -2,7 +2,7 @@
 Shader "SeeingSoundwaves/DistanceLerp" {
 	Properties {
 		_mainTexture("Texture", 2D) = "white" {}
-		_range("Range", Float) = 100
+		_range("Range", Float) = 200
 		_dropoff("Drop off", Float) = 0.1
 		_strength("Strength", Float) = 100.0	
      }

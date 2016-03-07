@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Flyer : MonoBehaviour {
 
@@ -8,6 +9,7 @@ public class Flyer : MonoBehaviour {
     public float topspeed = 4.0f;
     public float defaultSpeedDecay = 0.01f;
     public float triggeredSpeedDecay = 0.05f;
+    public float speedMod = 100.0f;
 
     float yRot;
     float xRot;
@@ -19,15 +21,17 @@ public class Flyer : MonoBehaviour {
     float xVelocity;
 
     public bool Controller = true;
+    
+    public bool m_Block = true;
 
 	// Use this for initialization
 	void Start () {
-        Cam = Camera.main;
+        Cam = Camera.main;       
     }
 	
 	// Update is called once per frame
 	void Update () {
-
+        
         //looking
         if (Controller)
         {
@@ -45,7 +49,8 @@ public class Flyer : MonoBehaviour {
         currentXrot = Mathf.SmoothDamp(currentXrot, xRot, ref xRotV, lookSmoothDamp);
         currentYrot = Mathf.SmoothDamp(currentYrot, yRot, ref yRotV, lookSmoothDamp);
 
-        transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+        if (!m_Block)
+            transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
 
         if (Controller)
         {
@@ -64,14 +69,29 @@ public class Flyer : MonoBehaviour {
         else
         { 
             //keyboard
-            if (Input.GetKey("a"))
-                xVelocity += 1.0f;                            
-            else if (Input.GetKey("d"))
-                xVelocity -= defaultSpeedDecay; //slerpen nog, nu is het nog niet erg soepel.            
+            if (Input.GetKey("w"))
+                xVelocity += 0.5f / speedMod;                            
+            else if (Input.GetKey("s"))
+                xVelocity -= 0.5f / speedMod; //slerpen nog, nu is het nog niet erg soepel.            
         }
-        
-        xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed        
 
-        transform.position += transform.forward * (xVelocity / 10) ;
+
+        xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed                
+        
+        if(!m_Block)
+                transform.position += transform.forward * (xVelocity / 10);
+
+        //checkCloseness();
 	}
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.tag == "Insect")
+        {
+            GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
+            //Destroy(col.gameObject);
+            col.gameObject.SetActive(true);
+        }        
+    }
 }
+    

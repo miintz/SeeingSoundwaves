@@ -26,7 +26,8 @@ public class Insect : MonoBehaviour {
 	public bool Flying = true;    
 	public float FlyingTime = 1.0f;
 	public float FlyingIntervalRandom = 0.5f;
-	public float FlyingStrength = 2.0f;     //Unity units    
+	public float FlyingStrength = 2.0f;     //Unity units  
+    public bool InitialBurstOfSpeed = true;
     public bool ChangesMind = false;
     public int ChangesMindChance = 50;
     public bool Migrating = false;   
@@ -37,6 +38,7 @@ public class Insect : MonoBehaviour {
     public float FleeingDistance = 2.0f;    
 	public bool DebugMode = false;
     public bool CubeMode = true;
+    public bool DistanceLerp = true;
 
     public Color DebugObjectColor = Color.white;
 
@@ -48,8 +50,14 @@ public class Insect : MonoBehaviour {
     private List<GameObject> InsectSwarm;
     private float UsedRegionRadius = 0.0f;
 
+    private bool InitialBurstOfSpeedMod;
+    
+    public bool Hidden = false;
+
 	void Start () {
-        
+
+        InitialBurstOfSpeedMod = InitialBurstOfSpeed;
+
         if (Application.isPlaying)
         {
             this.transform.localScale *= SizeMod;
@@ -69,9 +77,9 @@ public class Insect : MonoBehaviour {
 
                     i.transform.position = this.transform.position;
                     i.transform.localScale = this.transform.localScale;
-                    
-                    i.AddComponent<Insect>();
 
+                    i.AddComponent<Insect>();
+           
                     i.GetComponent<Insect>().PlayerObject = PlayerObject;
                     i.GetComponent<Insect>().CubeMode = CubeMode;
                     i.GetComponent<Insect>().Preset = Preset;
@@ -94,10 +102,27 @@ public class Insect : MonoBehaviour {
                     i.GetComponent<Insect>().LinearInterpolation = LinearInterpolation;
                     i.GetComponent<Insect>().Migrating = Migrating;
                     i.GetComponent<Insect>().UsedRegionRadius = UsedRegionRadius;
+                    i.GetComponent<Insect>().InitialBurstOfSpeed = InitialBurstOfSpeed;
+
+                    if (DistanceLerp)
+                    {
+                        Material newMat = Resources.Load("Materials/distanceLerp", typeof(Material)) as Material;
+                        i.GetComponent<MeshRenderer>().material = newMat;
+                    }
+
+                    i.AddComponent<Rigidbody>();
+                    i.GetComponent<Rigidbody>().useGravity = false;
+                    i.GetComponent<Rigidbody>().angularDrag = 1000;
+
+                    i.tag = "Insect";
+                    i.layer = 9;
 
                     InsectSwarm.Add(i);
                 }
             }
+            
+            Material nm = Resources.Load("Materials/distanceLerp", typeof(Material)) as Material;
+            GetComponent<MeshRenderer>().material = nm;
 
             InsectOrigin = this.transform.position;
 
@@ -118,144 +143,150 @@ public class Insect : MonoBehaviour {
 		
 	void Update () {
 
-        if (Application.isPlaying)
+        if (!Hidden)
         {
-            if (StickToRegion && UsedRegionRadius < FlyingStrength) //usedRegion is altijd groter dan FlyingStrength als Migration aanstaat. Daarom deze rare check. 
+            if (Application.isPlaying)
             {
-                if (!Migrating)
+                if (StickToRegion && UsedRegionRadius < FlyingStrength) //usedRegion is altijd groter dan FlyingStrength als Migration aanstaat. Daarom deze rare check. 
                 {
-                    Debug.LogError("Stick to Region is on while FlyingStrength is higher than DistanceFromOrigin, please make sure FlyingStrength is lower than DistanceFromOrigin");
-                    return;
-                }
-            }
-            if(ChangesMindChance >= 100)
-            {
-                Debug.LogError("ChangesMindChance is higher than 99. Please use a maximum of 99.");
-            }
-
-            if (Jittering)
-            {
-                JitterCounter += Time.deltaTime * 100;
-                if (JitterCounter >= JitterTime)
-                {
-                    JitterCounter = 0;
-                    Jitter();
-                }
-            }
-
-            if (Flying)
-            {
-                if (!Migrating)
-                {
-                    FlyingCounter += Time.deltaTime * 1000;
-                    if (FlyingCounter >= (FlyingTime + Random.Range(-FlyingIntervalRandom, FlyingIntervalRandom)))
+                    if (!Migrating)
                     {
-                        FlyingCounter = 0;
-                        Fly();
+                        Debug.LogError("Stick to Region is on while FlyingStrength is higher than DistanceFromOrigin, please make sure FlyingStrength is lower than DistanceFromOrigin");
+                        return;
                     }
                 }
-                else
+                if (ChangesMindChance >= 100)
                 {
-                    //migratie, dus anim is afhankelijk of het insect in de buurt van de target is.                     
-                    if (Vector3.Distance(transform.position, InsectTransformPosition) < 1.0f)
-                        Fly();
-                    else if(ChangesMind) //Of changesMind staat aan, dan is er een kleine kans dat er gewoon direct gevlogen moet worden.
-                    {                        
-                        float chance = Random.value * 100;                        
-                        if (chance > ChangesMindChance)
+                    Debug.LogError("ChangesMindChance is higher than 99. Please use a maximum of 99.");
+                }
+
+                if (Jittering)
+                {
+                    JitterCounter += Time.deltaTime * 1000;
+                    if (JitterCounter >= JitterTime)
+                    {
+
+
+                        JitterCounter = 0;
+                        Jitter();
+                    }
+                }
+
+                if (Flying)
+                {
+                    if (!Migrating)
+                    {
+                        FlyingCounter += Time.deltaTime * 1000;
+                        if (FlyingCounter >= (FlyingTime + Random.Range(-FlyingIntervalRandom, FlyingIntervalRandom)))
+                        {
+                            FlyingCounter = 0;
                             Fly();
-                    }                    
+                        }
+                    }
+                    else
+                    {
+                        //migratie, dus anim is afhankelijk of het insect in de buurt van de target is.                     
+                        if (Vector3.Distance(transform.position, InsectTransformPosition) < 1.0f)
+                            Fly();
+                        else if (ChangesMind) //Of changesMind staat aan, dan is er een kleine kans dat er gewoon direct gevlogen moet worden.
+                        {
+                            float chance = Random.value * 100;
+                            if (chance > ChangesMindChance)
+                                Fly();
+                        }
+                    }
+                }
+
+                //fleeing overides the flying
+                if (Vector3.Distance(this.transform.position, PlayerObject.transform.position) < FleeingDistance)
+                    Flee();
+
+                if (this.transform.position != InsectTransformPosition)
+                {
+                    Vector3 pos = InsectTransformPosition;
+                    if (!LinearInterpolation)
+                        this.transform.position = Vector3.Slerp(this.transform.position, pos, Time.deltaTime);
+                    else
+                        this.transform.position = Vector3.Lerp(this.transform.position, pos, Time.deltaTime);
+                }
+
+                if (this.transform.rotation != InsectTransformRotation)
+                {
+                    Quaternion rot = InsectTransformRotation;
+                    if (!LinearInterpolation)
+                        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, rot, Time.deltaTime);
+                    else
+                        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, rot, Time.deltaTime);
+                }
+
+                if (DebugObjectColor != Color.white)
+                {
+                    this.GetComponent<Renderer>().material.SetColor("_Color", DebugObjectColor);
                 }
             }
-
-            //fleeing overides the flying
-            if (Vector3.Distance(this.transform.position, PlayerObject.transform.position) < FleeingDistance)
-                Flee();            
-
-            if (this.transform.position != InsectTransformPosition)
-            {                
-                Vector3 pos = InsectTransformPosition;
-                if(!LinearInterpolation)
-                    this.transform.position = Vector3.Slerp(this.transform.position, pos, Time.deltaTime);
-                else
-                    this.transform.position = Vector3.Lerp(this.transform.position, pos, Time.deltaTime);
-            }
-            
-            if (this.transform.rotation != InsectTransformRotation)
+            else
             {
-                Quaternion rot = InsectTransformRotation;
-                if(!LinearInterpolation)
-                    this.transform.rotation = Quaternion.Slerp(this.transform.rotation, rot, Time.deltaTime);
-                else
-                    this.transform.rotation = Quaternion.Lerp(this.transform.rotation, rot, Time.deltaTime);
-            }
+                //presets...
+                switch (Preset)
+                {
+                    case InsectPreset.Wasp:
+                        Jittering = false;
+                        JitterAmount = 3.0f;
+                        JitterTime = 3.0f;
+                        Flying = true;
+                        FlyingIntervalRandom = 0.5f;
+                        FlyingStrength = 1.5f;
+                        FlyingTime = 1.0f;
+                        DebugObjectColor = Color.yellow;
+                        Fleeing = false;
+                        FleeingDistance = 0.1f;
+                        UsedRegionRadius = RegionRadius;
 
-            if (DebugObjectColor != Color.white)
-            {
-                this.GetComponent<Renderer>().material.SetColor("_Color", DebugObjectColor);
-            }
-        }
-        else
-        {           
-            //presets...
-            switch (Preset)
-            { 
-                case InsectPreset.Wasp:
-                    Jittering = true;
-                    JitterAmount = 3.0f;
-                    JitterTime = 3.0f;
-                    Flying = true;
-                    FlyingIntervalRandom = 0.5f;
-                    FlyingStrength = 1.5f;
-                    FlyingTime = 1.0f;
-                    DebugObjectColor = Color.yellow;
+                        break;
+                    case InsectPreset.Mosquito:
+                        Jittering = true;
+                        JitterAmount = 0.01f;
+                        JitterTime = 0.1f;
+                        Flying = true;
+                        FlyingTime = 0.1f;
+                        FlyingStrength = 0.1f;
+                        DebugObjectColor = Color.red;
 
-                    UsedRegionRadius = RegionRadius;
+                        UsedRegionRadius = RegionRadius;
 
-                    break;
-                case InsectPreset.Mosquito:
-                    Jittering = true;
-                    JitterAmount = 0.01f;
-                    JitterTime = 0.1f;
-                    Flying = true;
-                    FlyingTime = 0.1f;
-                    FlyingStrength = 0.1f;
-                    DebugObjectColor = Color.red;
+                        break;
+                    case InsectPreset.Fly:
+                        Jittering = true;
+                        JitterAmount = 0.5f;
+                        JitterTime = 0.3f;
+                        Flying = true;
+                        FlyingStrength = 1.0f;
+                        FlyingIntervalRandom = 0.2f;
+                        FlyingTime = 0.5f;
+                        DebugObjectColor = Color.green;
 
-                    UsedRegionRadius = RegionRadius;
+                        UsedRegionRadius = RegionRadius;
 
-                    break;
-                case InsectPreset.Fly:
-                    Jittering = true;
-                    JitterAmount = 0.5f;
-                    JitterTime = 0.3f;
-                    Flying = true;
-                    FlyingStrength = 1.0f;
-                    FlyingIntervalRandom = 0.2f;
-                    FlyingTime = 0.5f;
-                    DebugObjectColor = Color.green;
+                        break;
+                    case InsectPreset.DragonFly:
+                        Jittering = false;
+                        JitterAmount = 0.0f;
+                        JitterTime = 0.0f;
+                        Flying = true;
+                        FlyingStrength = 1.0f;
+                        FlyingIntervalRandom = 0.2f;
+                        FlyingTime = 0.5f;
+                        Migrating = true;
+                        LinearInterpolation = true;
+                        DebugObjectColor = Color.blue;
 
-                    UsedRegionRadius = RegionRadius;
+                        UsedRegionRadius = RegionRadius * 4;
 
-                    break;
-                case InsectPreset.DragonFly:
-                    Jittering = false;
-                    JitterAmount = 0.0f;
-                    JitterTime = 0.0f;
-                    Flying = true;
-                    FlyingStrength = 1.0f;
-                    FlyingIntervalRandom = 0.2f;
-                    FlyingTime = 0.5f;
-                    Migrating = true;
-                    LinearInterpolation = true;
-                    DebugObjectColor = Color.blue;
+                        break;
+                    case InsectPreset.Custom:
 
-                    UsedRegionRadius = RegionRadius * 4;
-
-                    break;
-                case InsectPreset.Custom:
-                    
-                    break;
+                        break;
+                }
             }
         }
 	}
@@ -289,16 +320,24 @@ public class Insect : MonoBehaviour {
 	{      
 		float x = Random.Range(-JitterAmount, JitterAmount);
 		float y = Random.Range(-JitterAmount, JitterAmount);
-		float z = Random.Range(-JitterAmount, JitterAmount);
+		float z = Random.Range(-JitterAmount, JitterAmount);       
 
 		InsectTransformPosition += new Vector3(x, y, z);
 	} 
 
 	void Fly()
 	{ 
-		//volg een vector met een bepaalde lengte.                
-        float strength = Random.Range(-FlyingStrength, FlyingStrength); // de ene of de andere kant op.         
-        
+		//volg een vector met een bepaalde lengte.   
+        float strength = 0.0f;
+       
+        if (InitialBurstOfSpeedMod)
+        {
+            strength = Random.Range(-FlyingStrength * RegionRadius / 2, FlyingStrength * RegionRadius / 2); // de ene of de andere kant op.         
+            InitialBurstOfSpeedMod = false;
+        }
+        else
+            strength = Random.Range(-FlyingStrength, FlyingStrength); // de ene of de andere kant op.         
+
 		Quaternion rot = Random.rotation;
 		Vector3 cp = InsectTransformPosition;
 
@@ -308,12 +347,13 @@ public class Insect : MonoBehaviour {
 
 		//ff zien of de dist nog wel in de region zit
 		if (StickToRegion)
-		{
+        {
             if (!Migrating)
             {                
                 Vector3 prospected = InsectTransformPosition + (rot * Vector3.forward) * strength;
                 float prospectedDist = Vector3.Distance(InsectOrigin, prospected);
 
+                
                 if (prospectedDist < UsedRegionRadius)
                     InsectTransformPosition += (rot * Vector3.forward) * strength;
                 else
