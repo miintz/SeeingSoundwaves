@@ -51,7 +51,7 @@ public class Flyer : MonoBehaviour {
         currentYrot = Mathf.SmoothDamp(currentYrot, yRot, ref yRotV, lookSmoothDamp);
 
         //if (!m_Block)
-        //    transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+         transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
 
         if (Controller)
         {
