@@ -329,14 +329,14 @@ public class Insect : MonoBehaviour {
 	} 
 
 	void Fly()
-	{ 
+	{              
 		//volg een vector met een bepaalde lengte.   
-        float strength = 0.0f;
-       
+        float strength = 0.0f;        
+        
         if (InitialBurstOfSpeedMod)
-        {
-            strength = Random.Range(-FlyingStrength * RegionRadius / 2, FlyingStrength * RegionRadius / 2); // de ene of de andere kant op.         
-            InitialBurstOfSpeedMod = false;
+        {            
+            strength = Random.Range(-RegionRadius, RegionRadius); // de ene of de andere kant op.         
+            InitialBurstOfSpeedMod = false;            
         }
         else
             strength = Random.Range(-FlyingStrength, FlyingStrength); // de ene of de andere kant op.         
@@ -355,7 +355,6 @@ public class Insect : MonoBehaviour {
             {                
                 Vector3 prospected = InsectTransformPosition + (rot * Vector3.forward) * strength;
                 float prospectedDist = Vector3.Distance(InsectOrigin, prospected);
-
                 
                 if (prospectedDist < UsedRegionRadius)
                     InsectTransformPosition += (rot * Vector3.forward) * strength;

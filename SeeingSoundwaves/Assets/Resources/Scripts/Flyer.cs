@@ -32,11 +32,12 @@ public class Flyer : MonoBehaviour {
     public bool GearVR = true;
 
     public bool m_Block = false;
-
+    
 	// Use this for initialization
 	void Start () {
         Cam = Camera.main;
         Menu = GameObject.FindGameObjectsWithTag("Menu");
+
     }
 	
 	// Update is called once per frame
@@ -60,7 +61,7 @@ public class Flyer : MonoBehaviour {
         currentYrot = Mathf.SmoothDamp(currentYrot, yRot, ref yRotV, lookSmoothDamp);
 
         if (!GearVR)
-            GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+            GameObject.FindGameObjectWithTag("Char").transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
         
          p = "Showing Input\n";
          p += "Controller = " + Controller.ToString() + "\n";
