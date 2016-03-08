@@ -121,7 +121,7 @@ public class EchoLocationFlyer : MonoBehaviour
         }
         else if (KeyMode)
         {
-            if (Input.GetKey(KeyCode.K))
+            if (Input.GetKey(KeyCode.K) || Input.GetMouseButtonDown(0))
             {         
                 fading = true;
 

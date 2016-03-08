@@ -91,19 +91,11 @@ public class Flyer : MonoBehaviour {
             else
             {
                 if (Input.GetAxis("Mouse X") != 0.0f)
-                {
-                    p += "Input: MouseX " + Input.GetAxis("Mouse X");
-
+                {                
                     if (Input.GetAxis("Mouse X") > 0.0f)
-                    {
                         xVelocity -= 0.10f;
-                        //GameObject.FindGameObjectsWithTag("Insect").ToList().ForEach(t => t.GetComponent<Insect>().DebugObjectColor = new Color(UnityEngine.Random.Range(0.0f, 0.5f), Random.Range(0.0f, 0.5f), Random.Range(0.0f, 0.5f)));
-                    }
                     else
-                    {
                         xVelocity += 0.10f;
-                        //GameObject.FindGameObjectsWithTag("Insect").ToList().ForEach(t => t.GetComponent<Insect>().DebugObjectColor = new Color(UnityEngine.Random.Range(0.5f, 1.0f), Random.Range(0.5f, 1.0f), Random.Range(0.5f, 1.0f)));
-                    }
                 }
 
                 //if (Input.GetAxis("Mouse Y") < 0.0f)
