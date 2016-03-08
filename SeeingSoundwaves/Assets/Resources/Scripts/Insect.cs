@@ -80,7 +80,7 @@ public class Insect : MonoBehaviour {
 
                     i.transform.position = this.transform.position;
                     i.transform.localScale = this.transform.localScale;
-
+                    
                     i.AddComponent<Insect>();
            
                     i.GetComponent<Insect>().PlayerObject = PlayerObject;
@@ -107,14 +107,18 @@ public class Insect : MonoBehaviour {
                     i.GetComponent<Insect>().UsedRegionRadius = UsedRegionRadius;
                     i.GetComponent<Insect>().InitialBurstOfSpeed = InitialBurstOfSpeed;
 
+                    i.AddComponent<AudioSource>();
+                    i.GetComponent<AudioSource>().clip = this.GetComponent<AudioSource>().clip;
+                    //i.GetComponent<AudioSource>().playOnAwake = false;
+
                     if (DistanceLerp)
                     {
                         Material newMat = Resources.Load("Materials/distanceLerp", typeof(Material)) as Material;
                         i.GetComponent<MeshRenderer>().material = newMat;
                     }
 
-                    //i.AddComponent<Rigidbody>();
-                    //i.GetComponent<Rigidbody>().useGravity = false;
+                    i.AddComponent<Rigidbody>();
+                    i.GetComponent<Rigidbody>().useGravity = false;
                     //i.GetComponent<Rigidbody>().angularDrag = 1000;
 
                     i.tag = "Insect";
@@ -407,5 +411,15 @@ public class Insect : MonoBehaviour {
         Vector3 target = new Vector3(fx, fy, fz);
 
         InsectTransformPosition += target; //ga weg van speler. 
+    }
+    void OnCollisionEnter(Collision col)
+    {        
+        if (col.gameObject.tag == "Char")
+        {            
+            GameObject.Find("Main Camera").GetComponent<AudioSource>().PlayOneShot(GameObject.Find("Main Camera").GetComponent<AudioSource>().clip);
+
+            gameObject.SetActive(false);            
+            GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Flyer>().Score++;
+        }
     }
 }

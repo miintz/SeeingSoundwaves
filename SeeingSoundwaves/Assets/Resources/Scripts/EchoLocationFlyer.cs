@@ -21,6 +21,8 @@ public class EchoLocationFlyer : MonoBehaviour
     public float MicrophoneHighLimit = 25.0f;
     public float MaxShaderStrength = 100.0f;
 
+    public float ChangeStrengthMod = 2.0f;
+
     private Quaternion CameraRotation;
     private Quaternion CharacterRotation;
     private Vector3 CameraPosition;
@@ -41,7 +43,7 @@ public class EchoLocationFlyer : MonoBehaviour
         if (EnableEchoLocation)
         {
             Character = GetComponent<Flyer>();
-            Character.m_Block = true; //singleton!!! handig            
+            //Character.m_Block = true; //singleton!!! handig            
             
             Microfoon = new MicIn(this, MicrophoneSensitivity);            
         }
@@ -271,19 +273,19 @@ public class EchoLocationFlyer : MonoBehaviour
         switch(number)
         {
             case 0:
-                GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 25));              
+                GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 50 * ChangeStrengthMod));              
             break;
             case 1:
-            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 50));     
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 100 * ChangeStrengthMod));     
             break;
             case 2:
-            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 75));     
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 150 * ChangeStrengthMod));     
             break;
             case 3:
-            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 100));     
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 200 * ChangeStrengthMod));     
             break;
             case 4:
-            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 125));     
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 250 * ChangeStrengthMod));     
             break;
         }
     }

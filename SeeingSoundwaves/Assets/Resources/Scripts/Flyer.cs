@@ -27,6 +27,8 @@ public class Flyer : MonoBehaviour {
     float xRotV;
     float lookSmoothDamp;
     float xVelocity;
+    
+    public int Score = 0;
 
     public bool Controller = false;
     public bool GearVR = true;
@@ -120,10 +122,10 @@ public class Flyer : MonoBehaviour {
         else
         {
             if (!GearVR)
-            {
-                //keyboard
+            {                
+                //keyboard                
                 if (Input.GetKey("w"))
-                    xVelocity += 0.5f / speedMod;
+                    xVelocity += 0.5f / speedMod;                
                 else if (Input.GetKey("s"))
                     xVelocity -= 0.5f / speedMod; //slerpen nog, nu is het nog niet erg soepel.            
                 else if (Input.GetKey("d"))
@@ -151,10 +153,11 @@ public class Flyer : MonoBehaviour {
         }
 
         xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed                
-        
-        if(!m_Block)
-           GameObject.FindGameObjectWithTag("Char").transform.position += transform.forward * (xVelocity / 10);
 
+        if (!m_Block)
+        {
+            GameObject.FindGameObjectWithTag("Char").transform.position += transform.forward * (xVelocity / 10);
+        }
         //checkCloseness();
 	}
     string p = "";
@@ -164,10 +167,10 @@ public class Flyer : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision col)
-    {
+    {        
         if (col.gameObject.tag == "Insect")
         {
-            GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);                 
+            GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
             col.gameObject.SetActive(false);
         }        
     }    
