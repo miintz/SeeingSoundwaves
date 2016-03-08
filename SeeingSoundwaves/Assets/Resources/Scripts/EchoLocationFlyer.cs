@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityStandardAssets.Characters.FirstPerson;
+using System.Linq;
 
 public class EchoLocationFlyer : MonoBehaviour
 {
@@ -197,5 +198,115 @@ public class EchoLocationFlyer : MonoBehaviour
         }
 
         return r;
+    }
+
+    public void ChangeMicrophoneSensitivity(int number)
+    {
+        switch (number)
+        {
+            case 0:
+                MicrophoneSensitivity = 50f;
+                break;
+            case 1:
+                MicrophoneSensitivity = 75f;
+                break;
+            case 2:
+                MicrophoneSensitivity = 100f;
+                break;
+            case 3:
+                MicrophoneSensitivity = 125f;
+                break;
+            case 4:
+                MicrophoneSensitivity = 150f;
+                break;
+        }
+    }
+
+    public void ChangeFadeSpeed(int number)
+    {      
+        switch(number)
+        {
+            case 0:
+                FadeSpeed = 0.5f;
+                break;
+            case 1:
+                FadeSpeed = 1.0f;
+                break;
+            case 2:
+                FadeSpeed = 1.5f;
+                break;
+            case 3:
+                FadeSpeed = 2.0f;
+                break;
+            case 4:
+                FadeSpeed = 2.5f;
+                break;
+        }        
+    }
+
+    public void ChangeMicrophoneLowLimit(int number)
+    {
+        switch (number)
+        {
+            case 0:
+                MicrophoneLowLimit = 5.0f;
+                break;
+            case 1:
+                MicrophoneLowLimit = 10.0f;
+                break;
+            case 2:
+                MicrophoneLowLimit = 15.0f;
+                break;
+            case 3:
+                MicrophoneLowLimit = 20.0f;
+                break;
+            case 4:
+                MicrophoneLowLimit = 25.0f;
+                break;
+        }
+    }
+
+    public void ChangeShaderStrength(int number)
+    {
+        switch(number)
+        {
+            case 0:
+                GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 25));              
+            break;
+            case 1:
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 50));     
+            break;
+            case 2:
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 75));     
+            break;
+            case 3:
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 100));     
+            break;
+            case 4:
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<MeshRenderer>().material.SetFloat("_range", 125));     
+            break;
+        }
+    }
+
+    public void ChangeShaderDropoff(int number)
+    {
+        switch (number)
+        {
+            case 0:
+                Resources.Load<Material>("Resources/distanceLerp").SetFloat("_dropoff", 0.005f);
+                break;
+            case 1:
+                Resources.Load<Material>("Resources/distanceLerp").SetFloat("_dropoff", 0.02f);
+                break;
+            case 2:
+                Resources.Load<Material>("Resources/distanceLerp").SetFloat("_dropoff", 0.1f);
+                break;
+            case 3:
+                Resources.Load<Material>("Resources/distanceLerp").SetFloat("_dropoff", 0.25f);
+                break;
+            case 4:
+                Resources.Load<Material>("Resources/distanceLerp").SetFloat("_dropoff", 0.5f);
+                break;
+        }
     }
 }

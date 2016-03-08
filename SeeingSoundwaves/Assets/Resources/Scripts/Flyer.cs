@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class Flyer : MonoBehaviour {
 
@@ -11,6 +12,12 @@ public class Flyer : MonoBehaviour {
     public float defaultSpeedDecay = 0.01f;
     public float triggeredSpeedDecay = 0.05f;
     public float speedMod = 100.0f;
+
+    private int tapCount = 0;
+    private float tapTimer = 0;
+    private float timeBetweenTap = 0;
+
+    GameObject[] Menu;
 
     float yRot;
     float xRot;
@@ -28,7 +35,8 @@ public class Flyer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Cam = Camera.main;       
+        Cam = Camera.main;
+        Menu = GameObject.FindGameObjectsWithTag("Menu");
     }
 	
 	// Update is called once per frame
@@ -51,17 +59,47 @@ public class Flyer : MonoBehaviour {
         currentXrot = Mathf.SmoothDamp(currentXrot, xRot, ref xRotV, lookSmoothDamp);
         currentYrot = Mathf.SmoothDamp(currentYrot, yRot, ref yRotV, lookSmoothDamp);
 
-        //if (!m_Block)
-        //GameObject.FindGameObjectWithTag("Char").transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
-
+        if (!GearVR)
+            GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(currentYrot, currentXrot, 0);
+        
          p = "Showing Input\n";
          p += "Controller = " + Controller.ToString() + "\n";
 
-         if (Input.GetMouseButtonDown(0))
+         if (tapCount < 5 && tapCount != 0)
          {
-             p += "Input: Tap\n";
-             System.Random r = new System.Random();   
-             //GameObject.FindGameObjectsWithTag("Insect").ToList().ForEach(t => t.GetComponent<Insect>().DebugObjectColor = new Color(UnityEngine.Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f)));
+             tapTimer += Time.deltaTime;
+             timeBetweenTap += Time.deltaTime;
+         }
+        
+         if (Input.GetMouseButtonDown(0))
+         {             
+             tapCount++;
+             if (timeBetweenTap > 1.0f)
+             {
+                 tapCount = 0;
+                 tapTimer = 0;
+                 timeBetweenTap = 0;              
+             }
+             else if (tapCount == 5)
+             {                 
+                 if (tapTimer < 5.0f)
+                 {
+                     //enable menu
+                     if (Menu[0].activeSelf)
+                     {
+                         Menu.ToList().ForEach(t => t.SetActive(false));
+                         GazeInputModuleCrosshair.DisplayCrosshair = false;
+                     }
+                     else
+                     {
+                         Menu.ToList().ForEach(t => t.SetActive(true));
+                         GazeInputModuleCrosshair.DisplayCrosshair = true;
+                     }
+                 }
+
+                 tapCount = 0;
+                 tapTimer = 0;
+             }
          }
 
         if (Controller)
@@ -87,6 +125,8 @@ public class Flyer : MonoBehaviour {
                     xVelocity += 0.5f / speedMod;
                 else if (Input.GetKey("s"))
                     xVelocity -= 0.5f / speedMod; //slerpen nog, nu is het nog niet erg soepel.            
+                else if (Input.GetKey("d"))
+                    xVelocity = 0.0f;
             }
             else
             {
@@ -101,19 +141,17 @@ public class Flyer : MonoBehaviour {
                 //if (Input.GetAxis("Mouse Y") < 0.0f)
                 //{
                 //    Debug.Log("Value: " + Input.GetAxis("Mouse Y") + " " + xVelocity); //het is een delta!!!
-
                 //    if (Input.GetAxis("Mouse Y") > 0.0f)
                 //        xVelocity += Input.GetAxis("Mouse Y") / speedMod;
                 //    else
                 //        xVelocity -= Input.GetAxis("Mouse X") / speedMod;
-                //}
-                
+                //}               
             }
         }
 
         xVelocity = Mathf.Clamp(xVelocity, 0.0f, topspeed); //clamp het naar de topspeed                
         
-        //if(!m_Block)
+        if(!m_Block)
            GameObject.FindGameObjectWithTag("Char").transform.position += transform.forward * (xVelocity / 10);
 
         //checkCloseness();
@@ -131,6 +169,6 @@ public class Flyer : MonoBehaviour {
             GameObject.Find("Empty").GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);                 
             col.gameObject.SetActive(false);
         }        
-    }
+    }    
 }
     

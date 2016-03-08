@@ -14,8 +14,9 @@ public enum InsectPreset
 public class Insect : MonoBehaviour {
 	Vector3 InsectTransformPosition;
     Quaternion InsectTransformRotation = new Quaternion(0,0,0,0);
-    
-    public GameObject PlayerObject;
+        
+    private GameObject PlayerObject;
+
     public InsectPreset Preset;
     public bool Swarm = false;
     public int SwarmSize = 0;
@@ -57,6 +58,8 @@ public class Insect : MonoBehaviour {
 	void Start () {
 
         InitialBurstOfSpeedMod = InitialBurstOfSpeed;
+
+        PlayerObject = GameObject.FindGameObjectWithTag("Char");
 
         if (Application.isPlaying)
         {
