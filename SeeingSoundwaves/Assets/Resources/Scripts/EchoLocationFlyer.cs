@@ -279,13 +279,13 @@ public class EchoLocationFlyer : MonoBehaviour
             GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 100 * ChangeStrengthMod));     
             break;
             case 2:
-            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 150 * ChangeStrengthMod));     
-            break;
-            case 3:
             GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 200 * ChangeStrengthMod));     
             break;
-            case 4:
+            case 3:
             GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 250 * ChangeStrengthMod));     
+            break;
+            case 4:
+            GameObject.FindGameObjectsWithTag("DistanceLerp").ToList().ForEach(t => t.GetComponent<Renderer>().material.SetFloat("_range", 300 * ChangeStrengthMod));     
             break;
         }
     }
